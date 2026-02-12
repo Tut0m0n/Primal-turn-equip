@@ -1,12 +1,9 @@
 // ========================================
 // PRIMAL - TRACKER ORDEN DE RONDA
-// FULL VERSION - Sidebar + Logo + Rondas
 // ========================================
 
-// TOTAL RONDAS
 const TOTAL_RONDAS = 10;
 
-// LISTA DE FASES
 const fases = [
   {
     titulo: "1) Comienzo de la ronda",
@@ -34,7 +31,7 @@ const fases = [
   {
     titulo: "4) Turno del jugador",
     detalles: [
-      "El jugador con la ficha de AMENAZA va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda",
+      "Recordatorio: El jugador con la ficha de AMENAZA va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda",
       "Remover Ceguera",
       "Chequeo del comportamiento del monstruo por sus efectos",
       "Chequeo de los objetivos del monstruo por efectos",
@@ -78,7 +75,7 @@ const fases = [
     detalles: [
       "Descarta la secuencia jugada (desde la carta más vieja a la nueva, dejando arriba la más nueva)",
       "Rellena tu mano: roba/descarta hasta tener tu tamaño (por defecto 5)",
-      "El MONSTRUO gira al jugador que tenga la AMENAZA (Aggro)",
+      "El MONSTRUO gira al jugador que tenga la AMENAZA",
       "Chequeo de efectos del comportamiento del monstruo",
       "Después de otros detonantes: Termina el turno de efectos del jugador",
       "Chequeo para los efectos de PLANTA/TERRENO en el sector",
@@ -88,21 +85,28 @@ const fases = [
   {
     titulo: "9) Fin de la ronda",
     detalles: [
-      "Chequeo de POSTURA (Stance), PELIGRO (Peril) y efectos de comportamiento del monstruo",
+      "Chequeo de POSTURA, PELIGRO y efectos de comportamiento del monstruo",
       "Avanza el marcador de turno",
       "Después de otros detonantes: Terminan los efectos de fin de ronda"
     ]
   }
 ];
 
-// STORAGE
-const STORAGE_KEY = "primal_tracker_state";
 
+// ========================================
 // ESTADO
+// ========================================
+
+const STORAGE_KEY = "primal_turn_tracker_state";
+
 let faseActual = 0;
 let rondaActual = 1;
 
+
+// ========================================
 // ELEMENTOS HTML
+// ========================================
+
 const phaseListEl = document.getElementById("phaseList");
 const phaseTitleEl = document.getElementById("phaseTitle");
 const phaseDetailsEl = document.getElementById("phaseDetails");
@@ -119,38 +123,28 @@ const btnReset = document.getElementById("btnReset");
 // ========================================
 
 function guardarEstado() {
-  const state = {
-    faseActual,
-    rondaActual
-  };
+  const state = { faseActual, rondaActual };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function cargarEstado() {
   const data = localStorage.getItem(STORAGE_KEY);
-
   if (!data) return;
 
   try {
-    const parsed = JSON.parse(data);
+    const state = JSON.parse(data);
 
-    if (typeof parsed.faseActual === "number") {
-      faseActual = parsed.faseActual;
-    }
+    if (typeof state.faseActual === "number") faseActual = state.faseActual;
+    if (typeof state.rondaActual === "number") rondaActual = state.rondaActual;
 
-    if (typeof parsed.rondaActual === "number") {
-      rondaActual = parsed.rondaActual;
-    }
-
-    // límites
     if (faseActual < 0) faseActual = 0;
     if (faseActual > fases.length - 1) faseActual = fases.length - 1;
 
     if (rondaActual < 1) rondaActual = 1;
     if (rondaActual > TOTAL_RONDAS) rondaActual = TOTAL_RONDAS;
 
-  } catch (err) {
-    console.log("Error cargando estado:", err);
+  } catch (error) {
+    console.log("Error cargando estado:", error);
   }
 }
 
@@ -158,33 +152,33 @@ function renderSidebar() {
   phaseListEl.innerHTML = "";
 
   fases.forEach((fase, index) => {
-    const div = document.createElement("div");
-    div.classList.add("phase-item");
+    const item = document.createElement("div");
+    item.classList.add("phase-item");
 
     if (index === faseActual) {
-      div.classList.add("active");
+      item.classList.add("active");
     }
 
-    div.textContent = fase.titulo;
+    item.textContent = fase.titulo;
 
-    div.addEventListener("click", () => {
+    item.addEventListener("click", () => {
       faseActual = index;
       actualizarVista();
     });
 
-    phaseListEl.appendChild(div);
+    phaseListEl.appendChild(item);
   });
 }
 
-function renderFaseCentral() {
+function renderFaseActual() {
   const fase = fases[faseActual];
 
   phaseTitleEl.textContent = fase.titulo;
   phaseDetailsEl.innerHTML = "";
 
-  fase.detalles.forEach((detalle) => {
+  fase.detalles.forEach(det => {
     const li = document.createElement("li");
-    li.textContent = detalle;
+    li.textContent = det;
     phaseDetailsEl.appendChild(li);
   });
 
@@ -200,24 +194,10 @@ function actualizarBotones() {
   btnNext.disabled = (faseActual === fases.length - 1 && rondaActual === TOTAL_RONDAS);
 }
 
-function actualizarVista() {
-  renderSidebar();
-  renderFaseCentral();
-  renderRonda();
-  actualizarBotones();
-  guardarEstado();
-}
-
-
-// ========================================
-// BOTONES
-// ========================================
-
-function siguiente() {
+function siguienteFase() {
   if (faseActual < fases.length - 1) {
     faseActual++;
   } else {
-    // si está en la última fase, pasa a la siguiente ronda
     if (rondaActual < TOTAL_RONDAS) {
       rondaActual++;
       faseActual = 0;
@@ -227,11 +207,10 @@ function siguiente() {
   actualizarVista();
 }
 
-function anterior() {
+function faseAnterior() {
   if (faseActual > 0) {
     faseActual--;
   } else {
-    // si está en la primera fase, vuelve a la ronda anterior
     if (rondaActual > 1) {
       rondaActual--;
       faseActual = fases.length - 1;
@@ -247,14 +226,27 @@ function resetear() {
   actualizarVista();
 }
 
+function actualizarVista() {
+  renderSidebar();
+  renderFaseActual();
+  renderRonda();
+  actualizarBotones();
+  guardarEstado();
+}
+
+
+// ========================================
+// EVENTOS
+// ========================================
+
+btnNext.addEventListener("click", siguienteFase);
+btnPrev.addEventListener("click", faseAnterior);
+btnReset.addEventListener("click", resetear);
+
 
 // ========================================
 // INIT
 // ========================================
-
-btnNext.addEventListener("click", siguiente);
-btnPrev.addEventListener("click", anterior);
-btnReset.addEventListener("click", resetear);
 
 cargarEstado();
 actualizarVista();
