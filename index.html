@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRIMAL - Orden de Turno</title>
+  <title>PRIMAL - Companion</title>
 
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -15,20 +15,20 @@
     Tu navegador no soporta audio.
   </audio>
 
-  <!-- BOTON MUSICA -->
+  <!-- CONTROL MUSICA -->
   <div class="music-control">
     <button id="musicToggleBtn" title="Música">🔊</button>
     <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5">
   </div>
 
-  <!-- APP WRAPPER -->
+  <!-- APP -->
   <div class="app">
 
-    <!-- PANTALLA 1: ENTRADA -->
+    <!-- PANTALLA 1: HOME -->
     <section id="screen-home" class="screen active">
       <div class="center-box fade-in">
-        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
-        <button id="enterBtn" class="btn-primary big">ENTRAR</button>
+        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo-home">
+        <button id="enterBtn" class="btn-enter">ENTRAR</button>
       </div>
     </section>
 
@@ -39,17 +39,32 @@
 
         <h2 class="question-title">Selecciona número de jugadores:</h2>
 
-        <div class="options-grid" id="playersOptions">
-          <div class="option-box" data-value="SOLO">SOLO</div>
-          <div class="option-box" data-value="2">2</div>
-          <div class="option-box" data-value="3">3</div>
-          <div class="option-box" data-value="4">4</div>
-          <div class="option-box" data-value="5">5</div>
+        <div class="option-list" id="playersOptions">
+          <div class="option-row" data-value="SOLO">
+            <span>SOLO</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="2">
+            <span>2</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="3">
+            <span>3</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="4">
+            <span>4</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="5">
+            <span>5</span>
+            <div class="checkbox"></div>
+          </div>
         </div>
 
         <div class="nav-buttons">
-          <button id="cancelPlayersBtn" class="btn-secondary">Cancelar</button>
-          <button id="nextPlayersBtn" class="btn-primary">Siguiente</button>
+          <button id="cancelPlayersBtn" class="btn-cancel">Cancelar</button>
+          <button id="nextPlayersBtn" class="btn-primary small-btn">Siguiente</button>
         </div>
       </div>
     </section>
@@ -61,24 +76,45 @@
 
         <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
 
-        <div class="options-grid monster-grid" id="monsterOptions">
-          <div class="option-box" data-value="Vyraxen">Vyraxen</div>
-          <div class="option-box" data-value="Korowon">Korowon</div>
-          <div class="option-box" data-value="Ozew">Ozew</div>
-          <div class="option-box" data-value="Hydar">Hydar</div>
-          <div class="option-box" data-value="Pazis">Pazis</div>
-          <div class="option-box" data-value="Taraska">Taraska</div>
-          <div class="option-box" data-value="Toramat">Toramat</div>
+        <div class="option-list" id="monsterOptions">
+          <div class="option-row" data-value="Vyraxen">
+            <span>Vyraxen</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Korowon">
+            <span>Korowon</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Ozew">
+            <span>Ozew</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Hydar">
+            <span>Hydar</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Pazis">
+            <span>Pazis</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Taraska">
+            <span>Taraska</span>
+            <div class="checkbox"></div>
+          </div>
+          <div class="option-row" data-value="Toramat">
+            <span>Toramat</span>
+            <div class="checkbox"></div>
+          </div>
         </div>
 
         <div class="nav-buttons">
-          <button id="cancelMonsterBtn" class="btn-secondary">Cancelar</button>
-          <button id="nextMonsterBtn" class="btn-primary">Siguiente</button>
+          <button id="cancelMonsterBtn" class="btn-cancel">Cancelar</button>
+          <button id="nextMonsterBtn" class="btn-primary small-btn">Siguiente</button>
         </div>
       </div>
     </section>
 
-    <!-- PANTALLA 4: TRACKER PRINCIPAL -->
+    <!-- PANTALLA 4: TRACKER -->
     <section id="screen-tracker" class="screen">
 
       <header class="top-header">
@@ -108,26 +144,22 @@
             </div>
           </div>
 
-          <h2 class="left-title">Orden de Ronda</h2>
+          <h2 class="left-title">ORDEN DE TURNO</h2>
 
           <div id="phaseList" class="phase-list"></div>
         </aside>
 
         <!-- PANEL CENTRAL -->
         <section class="center-panel">
-          <div class="center-logo">
-            <img src="assets/images/LOGO.png" alt="Primal Logo" class="mid-logo">
-          </div>
-
           <div class="phase-box fade-slide" id="phaseBox">
             <h2 id="currentPhaseTitle" class="phase-title">-</h2>
             <div id="currentPhaseContent" class="phase-content">Presiona Siguiente para comenzar.</div>
           </div>
 
           <div class="controls">
-            <button id="prevBtn" class="btn-secondary">← Anterior</button>
-            <button id="nextBtn" class="btn-primary">Siguiente →</button>
-            <button id="resetBtn" class="btn-danger">Reset ↻</button>
+            <button id="prevBtn" class="btn-secondary small-btn">← Anterior</button>
+            <button id="nextBtn" class="btn-primary small-btn">Siguiente →</button>
+            <button id="resetBtn" class="btn-danger small-btn">Reset ↻</button>
           </div>
         </section>
 
@@ -188,8 +220,8 @@
       <p class="modal-text">Si presionas reset se reseteará todo, ¿deseas hacerlo?</p>
 
       <div class="modal-buttons">
-        <button id="resetYesBtn" class="btn-danger">SI</button>
-        <button id="resetNoBtn" class="btn-secondary">NO</button>
+        <button id="resetYesBtn" class="btn-danger small-btn">SI</button>
+        <button id="resetNoBtn" class="btn-secondary small-btn">NO</button>
       </div>
     </div>
   </div>
