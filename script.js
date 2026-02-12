@@ -1,8 +1,12 @@
-// ==============================
-// PRIMAL - ORDEN DE TURNO TRACKER
-// Compatible con index original
-// ==============================
+// ========================================
+// PRIMAL - TRACKER ORDEN DE RONDA
+// FULL VERSION - Sidebar + Logo + Rondas
+// ========================================
 
+// TOTAL RONDAS
+const TOTAL_RONDAS = 10;
+
+// LISTA DE FASES
 const fases = [
   {
     titulo: "1) Comienzo de la ronda",
@@ -10,7 +14,7 @@ const fases = [
       "Remover Confusión",
       "Chequeo de Postura del Monstruo",
       "Chequeo de Postura del Monstruo y Peligros por efectos",
-      "Efectos de inicio de ronda"
+      "Después de otros detonantes: Efectos de inicio de ronda"
     ]
   },
   {
@@ -22,7 +26,7 @@ const fases = [
   {
     titulo: "3) Mantenimiento del monstruo",
     detalles: [
-      "Se refresca el comportamiento del monstruo (Descarta el número más bajo de comportamiento)",
+      "Se refresca el comportamiento del monstruo (descarta el número más bajo de comportamiento)",
       "+1 Esfuerzo por jugador",
       "+1 Esfuerzo por aceleración"
     ]
@@ -30,186 +34,227 @@ const fases = [
   {
     titulo: "4) Turno del jugador",
     detalles: [
-      "Recordatorio: el jugador con la ficha de Amenaza va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda.",
+      "El jugador con la ficha de AMENAZA va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda",
       "Remover Ceguera",
       "Chequeo del comportamiento del monstruo por sus efectos",
       "Chequeo de los objetivos del monstruo por efectos",
-      "Chequeo de las cartas del jugador por efectos (equipamiento, cartas de acción, maestría)",
-      "Después de otros detonantes: comienzan los efectos de inicio del turno del jugador",
+      "Chequeo de cartas del jugador por efectos (equipamiento, cartas de acción, maestría)",
+      "Después de otros detonantes: Comienzan los efectos de inicio del turno del jugador",
       "Chequeo del terreno o plantas del sector por efectos",
-      "Salir de la Meseta (Terreno)"
+      "Salir de la MESETA (Terreno)"
     ]
   },
   {
     titulo: "5) Fase de movimiento",
     detalles: [
-      "El jugador puede gastar 1 de Resistencia para moverse 1 sector (si esto pasa, remueve Atado)",
-      "El jugador debe gastar 2 de Resistencia para moverse 1 sector si es Arena (Terreno)",
-      "Si el jugador no se mueve, el jugador gana la ficha Atado",
+      "El jugador puede gastar 1 Resistencia para moverse 1 sector (si lo hace, remueve ATADO)",
+      "El jugador debe gastar 2 Resistencia para moverse 1 sector si es ARENA (Terreno)",
+      "Si el jugador NO se mueve, gana la ficha ATADO",
       "Chequeo del comportamiento del monstruo por efectos",
-      "Escóndete en un arbusto (rellenar después según el tipo de arbusto)"
+      "Escóndete en un ARBUSTO (según tipo de arbusto)"
     ]
   },
   {
     titulo: "6) Fase de acción",
     detalles: [
-      "Máximo 5 cartas de acción (salvo que alguna carta/habilidad diga lo contrario)",
-      "Máximo 3 cartas de acción en Agua",
-      "Los jugadores no pueden jugar cartas cuando están sobre Fuego (Terreno)",
+      "Máximo 5 cartas de acción (salvo que un efecto indique lo contrario)",
+      "Máximo 3 cartas de acción en AGUA",
+      "No se pueden jugar cartas estando sobre FUEGO (Terreno)",
       "Chequeo del comportamiento del monstruo por efectos",
-      "+1 Resistencia si 2 o más cartas se mantienen en tu mano al final de la fase de acción"
+      "+1 Resistencia si 2 o más cartas se mantienen en mano al final de la fase de acción"
     ]
   },
   {
-    titulo: "7) Fase de Desgaste",
+    titulo: "7) Fase de desgaste (Attrition)",
     detalles: [
-      "Roba 1 carta de Desgaste (2 si estás AMENAZADO)",
-      "Puedes remover una ROCA (Terreno) para prevenir el daño de Desgaste",
+      "Roba 1 carta de desgaste (2 si estás AMENAZADO)",
+      "Puedes remover una ROCA (Terreno) para prevenir el daño de desgaste",
       "Chequeo de efectos del comportamiento del monstruo",
-      "Después de otros detonantes: Termina la fase de efectos de Desgaste"
+      "Después de otros detonantes: Termina la fase de efectos de desgaste"
     ]
   },
   {
     titulo: "8) Fin del turno del jugador",
     detalles: [
-      "Descarta la secuencia jugada (desde la carta más vieja a la nueva jugada, dejando arriba la más nueva)",
+      "Descarta la secuencia jugada (desde la carta más vieja a la nueva, dejando arriba la más nueva)",
       "Rellena tu mano: roba/descarta hasta tener tu tamaño (por defecto 5)",
-      "El monstruo gira hacia el jugador con la AMENAZA",
+      "El MONSTRUO gira al jugador que tenga la AMENAZA (Aggro)",
       "Chequeo de efectos del comportamiento del monstruo",
       "Después de otros detonantes: Termina el turno de efectos del jugador",
-      "Chequeo de efectos de PLANTA/TERRENO en el sector",
+      "Chequeo para los efectos de PLANTA/TERRENO en el sector",
       "Subirse a una MESETA"
     ]
   },
   {
     titulo: "9) Fin de la ronda",
     detalles: [
-      "Chequeo de Postura, Peligro y efectos de comportamiento del monstruo",
-      "Avanza el Marcador de Turno",
-      "Después de otras detonaciones: Terminan los efectos de fin de ronda"
+      "Chequeo de POSTURA (Stance), PELIGRO (Peril) y efectos de comportamiento del monstruo",
+      "Avanza el marcador de turno",
+      "Después de otros detonantes: Terminan los efectos de fin de ronda"
     ]
   }
 ];
 
-// ------------------ ESTADO ------------------
-let pasoActual = 0;
+// STORAGE
+const STORAGE_KEY = "primal_tracker_state";
 
-// ------------------ STORAGE ------------------
-const STORAGE_KEY = "primal_paso_actual";
+// ESTADO
+let faseActual = 0;
+let rondaActual = 1;
 
-// ------------------ ELEMENTOS HTML ------------------
-let faseActualEl;
-let progresoEl;
-let listaOrdenEl;
+// ELEMENTOS HTML
+const phaseListEl = document.getElementById("phaseList");
+const phaseTitleEl = document.getElementById("phaseTitle");
+const phaseDetailsEl = document.getElementById("phaseDetails");
+const phaseProgressEl = document.getElementById("phaseProgress");
+const roundCounterEl = document.getElementById("roundCounter");
 
-let btnAnterior;
-let btnSiguiente;
-let btnReset;
+const btnPrev = document.getElementById("btnPrev");
+const btnNext = document.getElementById("btnNext");
+const btnReset = document.getElementById("btnReset");
 
 
-// ------------------ FUNCIONES ------------------
+// ========================================
+// FUNCIONES
+// ========================================
 
-function cargarPasoGuardado() {
-  const guardado = localStorage.getItem(STORAGE_KEY);
+function guardarEstado() {
+  const state = {
+    faseActual,
+    rondaActual
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 
-  if (guardado !== null) {
-    const num = parseInt(guardado);
-    if (!isNaN(num) && num >= 0 && num < fases.length) {
-      pasoActual = num;
+function cargarEstado() {
+  const data = localStorage.getItem(STORAGE_KEY);
+
+  if (!data) return;
+
+  try {
+    const parsed = JSON.parse(data);
+
+    if (typeof parsed.faseActual === "number") {
+      faseActual = parsed.faseActual;
     }
+
+    if (typeof parsed.rondaActual === "number") {
+      rondaActual = parsed.rondaActual;
+    }
+
+    // límites
+    if (faseActual < 0) faseActual = 0;
+    if (faseActual > fases.length - 1) faseActual = fases.length - 1;
+
+    if (rondaActual < 1) rondaActual = 1;
+    if (rondaActual > TOTAL_RONDAS) rondaActual = TOTAL_RONDAS;
+
+  } catch (err) {
+    console.log("Error cargando estado:", err);
   }
 }
 
-function guardarPaso() {
-  localStorage.setItem(STORAGE_KEY, pasoActual.toString());
-}
-
-function renderListaOrden() {
-  listaOrdenEl.innerHTML = "";
+function renderSidebar() {
+  phaseListEl.innerHTML = "";
 
   fases.forEach((fase, index) => {
     const div = document.createElement("div");
-    div.classList.add("fase-item");
+    div.classList.add("phase-item");
 
-    if (index === pasoActual) {
-      div.classList.add("fase-activa");
+    if (index === faseActual) {
+      div.classList.add("active");
     }
 
-    const titulo = document.createElement("h3");
-    titulo.textContent = fase.titulo;
+    div.textContent = fase.titulo;
 
-    const ul = document.createElement("ul");
-
-    fase.detalles.forEach((detalle) => {
-      const li = document.createElement("li");
-      li.textContent = detalle;
-      ul.appendChild(li);
+    div.addEventListener("click", () => {
+      faseActual = index;
+      actualizarVista();
     });
 
-    div.appendChild(titulo);
-    div.appendChild(ul);
-
-    listaOrdenEl.appendChild(div);
+    phaseListEl.appendChild(div);
   });
 }
 
+function renderFaseCentral() {
+  const fase = fases[faseActual];
+
+  phaseTitleEl.textContent = fase.titulo;
+  phaseDetailsEl.innerHTML = "";
+
+  fase.detalles.forEach((detalle) => {
+    const li = document.createElement("li");
+    li.textContent = detalle;
+    phaseDetailsEl.appendChild(li);
+  });
+
+  phaseProgressEl.textContent = `${faseActual + 1} / ${fases.length}`;
+}
+
+function renderRonda() {
+  roundCounterEl.textContent = `${rondaActual} / ${TOTAL_RONDAS}`;
+}
+
+function actualizarBotones() {
+  btnPrev.disabled = (faseActual === 0 && rondaActual === 1);
+  btnNext.disabled = (faseActual === fases.length - 1 && rondaActual === TOTAL_RONDAS);
+}
+
 function actualizarVista() {
-  faseActualEl.textContent = fases[pasoActual].titulo;
-  progresoEl.textContent = `${pasoActual + 1} / ${fases.length}`;
-
-  renderListaOrden();
-
-  btnAnterior.disabled = pasoActual === 0;
-  btnSiguiente.disabled = pasoActual === fases.length - 1;
-
-  guardarPaso();
+  renderSidebar();
+  renderFaseCentral();
+  renderRonda();
+  actualizarBotones();
+  guardarEstado();
 }
 
-function siguientePaso() {
-  if (pasoActual < fases.length - 1) {
-    pasoActual++;
-    actualizarVista();
+
+// ========================================
+// BOTONES
+// ========================================
+
+function siguiente() {
+  if (faseActual < fases.length - 1) {
+    faseActual++;
+  } else {
+    // si está en la última fase, pasa a la siguiente ronda
+    if (rondaActual < TOTAL_RONDAS) {
+      rondaActual++;
+      faseActual = 0;
+    }
   }
+
+  actualizarVista();
 }
 
-function pasoAnterior() {
-  if (pasoActual > 0) {
-    pasoActual--;
-    actualizarVista();
+function anterior() {
+  if (faseActual > 0) {
+    faseActual--;
+  } else {
+    // si está en la primera fase, vuelve a la ronda anterior
+    if (rondaActual > 1) {
+      rondaActual--;
+      faseActual = fases.length - 1;
+    }
   }
+
+  actualizarVista();
 }
 
 function resetear() {
-  pasoActual = 0;
+  faseActual = 0;
+  rondaActual = 1;
   actualizarVista();
 }
 
 
-// ------------------ INIT ------------------
+// ========================================
+// INIT
+// ========================================
 
-document.addEventListener("DOMContentLoaded", () => {
-  faseActualEl = document.getElementById("faseActual");
-  progresoEl = document.getElementById("progreso");
-  listaOrdenEl = document.getElementById("listaOrden");
+btnNext.addEventListener("click", siguiente);
+btnPrev.addEventListener("click", anterior);
+btnReset.addEventListener("click", resetear);
 
-  btnAnterior = document.getElementById("btnAnterior");
-  btnSiguiente = document.getElementById("btnSiguiente");
-  btnReset = document.getElementById("btnReset");
-
-  if (!faseActualEl || !progresoEl || !listaOrdenEl) {
-    console.error("ERROR: faltan elementos HTML (faseActual, progreso o listaOrden).");
-    return;
-  }
-
-  if (!btnAnterior || !btnSiguiente || !btnReset) {
-    console.error("ERROR: faltan botones HTML (btnAnterior, btnSiguiente o btnReset).");
-    return;
-  }
-
-  btnAnterior.addEventListener("click", pasoAnterior);
-  btnSiguiente.addEventListener("click", siguientePaso);
-  btnReset.addEventListener("click", resetear);
-
-  cargarPasoGuardado();
-  actualizarVista();
-});
+cargarEstado();
+actualizarVista();
