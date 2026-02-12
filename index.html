@@ -2,46 +2,63 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PRIMAL - Orden de Turno</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
-  <header class="header">
-    <h1>PRIMAL - Orden de Turno</h1>
-    <p class="subtitle">Tracker de ronda (Campaña / Combate)</p>
+  <header class="top-header">
+    <div class="header-content">
+      <h1>PRIMAL - Orden de Turno</h1>
+      <p>Tracker de ronda (Campaña / Combate)</p>
+    </div>
   </header>
 
-  <main class="container">
+  <main class="main-layout">
 
-    <!-- BOTONES -->
-    <section class="controls">
-      <button id="btnAnterior" class="btn btn-secondary">⬅ Anterior</button>
-      <button id="btnSiguiente" class="btn btn-primary">Siguiente ➡</button>
-      <button id="btnReset" class="btn btn-danger">🔄 Reset</button>
-    </section>
-
-    <!-- INFO -->
-    <section class="info-box">
-      <div class="info-card">
-        <h2>Fase actual:</h2>
-        <p id="faseActual">-</p>
+    <!-- SIDEBAR IZQUIERDA -->
+    <aside class="sidebar">
+      <div class="round-box">
+        <h2>Ronda</h2>
+        <div id="roundCounter" class="round-number">1 / 10</div>
       </div>
 
-      <div class="info-card">
-        <h2>Progreso:</h2>
-        <p id="progreso">0 / 0</p>
+      <div class="sidebar-title">
+        <h3>Orden de Ronda</h3>
       </div>
-    </section>
 
-    <!-- LISTA -->
-    <section class="turn-order">
-      <h2>Orden de Turno</h2>
-      <div id="listaOrden"></div>
+      <div id="phaseList" class="phase-list"></div>
+    </aside>
+
+
+    <!-- CONTENIDO CENTRAL -->
+    <section class="content">
+
+      <!-- LOGO CENTRADO -->
+      <div class="logo-container">
+        <img src="assets/images/LOGO.PNG" alt="Logo Primal" class="logo">
+      </div>
+
+      <!-- TITULO DE FASE -->
+      <div class="phase-header">
+        <h2 id="phaseTitle">-</h2>
+        <p class="phase-progress">Fase: <span id="phaseProgress">0 / 0</span></p>
+      </div>
+
+      <!-- DETALLES -->
+      <div class="phase-card">
+        <ul id="phaseDetails"></ul>
+      </div>
+
+      <!-- BOTONES -->
+      <div class="controls">
+        <button id="btnPrev" class="btn btn-gray">⬅ Atrás</button>
+        <button id="btnNext" class="btn btn-blue">Siguiente ➡</button>
+        <button id="btnReset" class="btn btn-red">Reset ⟳</button>
+      </div>
+
     </section>
 
   </main>
@@ -50,8 +67,6 @@
     <p>Hecho para uso personal - Primal Companion</p>
   </footer>
 
-  <!-- IMPORTANTE: script al final -->
   <script src="script.js"></script>
-
 </body>
 </html>
