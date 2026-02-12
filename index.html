@@ -3,56 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Primal - Turn Tracker</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Primal - Orden de Turno</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-
-  <header class="header">
-    <div class="header-top-decoration"></div>
-    <h1>PRIMAL</h1>
-    <h2>Turn Tracker</h2>
-    <div class="header-bottom-decoration"></div>
+  <header class="app-header">
+    <h1>PRIMAL - Orden de Turno</h1>
+    <p>Tracker de ronda (Campaña / Combate)</p>
   </header>
 
   <main class="container">
 
-    <section class="phase-card">
-      <div class="phase-info">
-        <p class="phase-number" id="phaseNumber">Paso 1 / 6</p>
-        <h2 class="phase-title" id="phaseTitle">INICIO DE LA RONDA</h2>
-        <p class="phase-description" id="phaseDescription">
-          Sigue las instrucciones y marca los chequeos.
-        </p>
+    <section class="controls">
+      <button id="btnPrev" class="btn">⬆ Anterior</button>
+      <button id="btnNext" class="btn primary">Siguiente ⬇</button>
+      <button id="btnReset" class="btn danger">Reset 🔄</button>
+    </section>
+
+    <section class="status">
+      <div class="status-box">
+        <span class="label">Fase actual:</span>
+        <span id="currentStepName" class="value">-</span>
       </div>
 
-      <div class="checklist" id="checklist">
-        <!-- Checklist se genera dinámicamente -->
+      <div class="status-box">
+        <span class="label">Progreso:</span>
+        <span id="progressText" class="value">0 / 0</span>
       </div>
     </section>
 
-    <section class="buttons">
-      <button id="prevBtn" class="btn">
-        ⬅ Atrás
-      </button>
-
-      <button id="resetBtn" class="btn btn-reset">
-        🔁 Reset
-      </button>
-
-      <button id="nextBtn" class="btn btn-next">
-        Siguiente ➡
-      </button>
+    <section class="turn-order">
+      <h2>Orden de Turno</h2>
+      <div id="stepsContainer" class="steps-container">
+        <!-- Aquí se cargan las fases desde script.js -->
+      </div>
     </section>
 
   </main>
 
-  <footer class="footer">
-    <p>Primal Turn Tracker - Proyecto personal</p>
+  <footer class="app-footer">
+    <p>Hecho para uso personal - Primal Companion</p>
   </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
