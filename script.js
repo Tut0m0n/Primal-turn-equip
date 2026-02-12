@@ -32,6 +32,12 @@ const currentPhaseTitle = document.getElementById("currentPhaseTitle");
 const currentPhaseContent = document.getElementById("currentPhaseContent");
 const roundNumber = document.getElementById("roundNumber");
 const phaseBox = document.getElementById("phaseBox");
+const playerTurnCounter = document.getElementById("playerTurnCounter");
+
+// MODAL RESET
+const resetModal = document.getElementById("resetModal");
+const resetYesBtn = document.getElementById("resetYesBtn");
+const resetNoBtn = document.getElementById("resetNoBtn");
 
 // COUNTERS
 const woundsValue = document.getElementById("woundsValue");
@@ -66,11 +72,14 @@ let damage = 0;
 let effort = 0;
 let accel = 0;
 
+let totalPlayers = 2;
+let currentPlayerTurn = 1;
+
 // ======================================
-// DATA - ORDEN DE TURNO
+// DATA - BASE PHASES
 // ======================================
 
-const phases = [
+const basePhases = [
   {
     title: "1. Inicio de la ronda",
     content: `
@@ -97,7 +106,10 @@ const phases = [
 - +1 ESFUERZO por jugador.
 - +1 ESFUERZO por aceleración
 `.trim()
-  },
+  }
+];
+
+const playerTurnPhases = [
   {
     title: "4. Turno del jugador",
     content: `
@@ -214,15 +226,44 @@ Si hay HIELO (terreno) en tu sector y tienes el estado AMENAZADO, debes de EXILI
 
 - Si todos los jugadores ya realizaron su turno, termina la ronda, sino debes de pasar al siguiente jugador.
 `.trim()
-  },
-  {
-    title: "9. Fin de la ronda",
-    content: `
+  }
+];
+
+const endRoundPhase = {
+  title: "9. Fin de la ronda",
+  content: `
 - Detonar: habilidades de AL FINAL DE LA RONDA, resolviendo primero los PELIGROS, COMPORTAMIENTO, cartas de Cazador, girar la ficha de FUEGO (terreno), remover todas las fichas de POLVO, eliminar fichas de VULNERABILIDAD y ATONTADO.
 - Avanza el Marcador de Turno
 `.trim()
+};
+
+// phases FINAL (se arma dinámico)
+let phases = [];
+
+// ======================================
+// BUILD PHASES ACCORDING TO PLAYERS
+// ======================================
+
+function buildPhasesForPlayers(playersCount) {
+  phases = [];
+
+  // base phases
+  phases.push(...basePhases);
+
+  // player turn repeated
+  for (let i = 1; i <= playersCount; i++) {
+    playerTurnPhases.forEach(p => {
+      phases.push({
+        title: p.title,
+        content: p.content,
+        playerTurn: i
+      });
+    });
   }
-];
+
+  // end round
+  phases.push(endRoundPhase);
+}
 
 // ======================================
 // SCREEN HANDLING
@@ -301,6 +342,7 @@ function renderPhaseList() {
   phases.forEach((phase, index) => {
     const div = document.createElement("div");
     div.classList.add("phase-item");
+
     div.textContent = phase.title;
 
     if (index === currentPhaseIndex) {
@@ -317,12 +359,20 @@ function updatePhaseDisplay() {
   currentPhaseTitle.textContent = phase.title;
   currentPhaseContent.textContent = phase.content;
 
+  if (phase.playerTurn) {
+    currentPlayerTurn = phase.playerTurn;
+  }
+
+  updatePlayerTurnCounter();
   renderPhaseList();
 
-  // animación suave cada cambio
   phaseBox.classList.remove("fade-slide");
   void phaseBox.offsetWidth;
   phaseBox.classList.add("fade-slide");
+}
+
+function updatePlayerTurnCounter() {
+  playerTurnCounter.textContent = `Turno Jugador ${currentPlayerTurn} / ${totalPlayers}`;
 }
 
 // ======================================
@@ -336,6 +386,8 @@ function updateRoundDisplay() {
 function resetTracker() {
   currentPhaseIndex = 0;
   currentRound = 1;
+  currentPlayerTurn = 1;
+
   updateRoundDisplay();
   updatePhaseDisplay();
 }
@@ -398,6 +450,38 @@ accelMinus.addEventListener("click", () => {
 });
 
 // ======================================
+// RESET MODAL
+// ======================================
+
+function openResetModal() {
+  resetModal.classList.add("active");
+}
+
+function closeResetModal() {
+  resetModal.classList.remove("active");
+}
+
+resetBtn.addEventListener("click", () => {
+  openResetModal();
+});
+
+resetYesBtn.addEventListener("click", () => {
+  closeResetModal();
+
+  wounds = 0;
+  damage = 0;
+  effort = 0;
+  accel = 0;
+
+  updateCounters();
+  resetTracker();
+});
+
+resetNoBtn.addEventListener("click", () => {
+  closeResetModal();
+});
+
+// ======================================
 // BUTTON EVENTS
 // ======================================
 
@@ -417,9 +501,10 @@ nextPlayersBtn.addEventListener("click", () => {
     return;
   }
 
-  // SOLO o 2 significan 2 jugadores mínimo
   if (selectedPlayers === "SOLO") {
-    selectedPlayers = "2";
+    totalPlayers = 2;
+  } else {
+    totalPlayers = parseInt(selectedPlayers);
   }
 
   showScreen(screenMonster);
@@ -435,6 +520,8 @@ nextMonsterBtn.addEventListener("click", () => {
     alert("Debes seleccionar un monstruo.");
     return;
   }
+
+  buildPhasesForPlayers(totalPlayers);
 
   showScreen(screenTracker);
 
@@ -467,10 +554,6 @@ prevBtn.addEventListener("click", () => {
   }
 
   updatePhaseDisplay();
-});
-
-resetBtn.addEventListener("click", () => {
-  resetTracker();
 });
 
 // ======================================
