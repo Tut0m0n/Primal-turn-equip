@@ -1,9 +1,10 @@
-// ========================================
-// PRIMAL - TRACKER ORDEN DE RONDA
-// ========================================
+// ===========================================
+// PRIMAL - ORDEN DE TURNO TRACKER
+// ===========================================
 
 const TOTAL_RONDAS = 10;
 
+// FASES DE LA RONDA
 const fases = [
   {
     titulo: "1) Comienzo de la ronda",
@@ -11,7 +12,7 @@ const fases = [
       "Remover Confusión",
       "Chequeo de Postura del Monstruo",
       "Chequeo de Postura del Monstruo y Peligros por efectos",
-      "Después de otros detonantes: Efectos de inicio de ronda"
+      "Efectos de inicio de ronda"
     ]
   },
   {
@@ -36,7 +37,7 @@ const fases = [
       "Chequeo del comportamiento del monstruo por sus efectos",
       "Chequeo de los objetivos del monstruo por efectos",
       "Chequeo de cartas del jugador por efectos (equipamiento, cartas de acción, maestría)",
-      "Después de otros detonantes: Comienzan los efectos de inicio del turno del jugador",
+      "Después de otros detonantes: comienzan los efectos de inicio del turno del jugador",
       "Chequeo del terreno o plantas del sector por efectos",
       "Salir de la MESETA (Terreno)"
     ]
@@ -93,24 +94,21 @@ const fases = [
 ];
 
 
-// ========================================
+// ===========================================
 // ESTADO
-// ========================================
+// ===========================================
 
-const STORAGE_KEY = "primal_turn_tracker_state";
-
-let faseActual = 0;
 let rondaActual = 1;
+let faseActual = 0;
 
 
-// ========================================
-// ELEMENTOS HTML
-// ========================================
+// ===========================================
+// ELEMENTOS DEL DOM
+// ===========================================
 
 const phaseListEl = document.getElementById("phaseList");
 const phaseTitleEl = document.getElementById("phaseTitle");
 const phaseDetailsEl = document.getElementById("phaseDetails");
-const phaseProgressEl = document.getElementById("phaseProgress");
 const roundCounterEl = document.getElementById("roundCounter");
 
 const btnPrev = document.getElementById("btnPrev");
@@ -118,83 +116,51 @@ const btnNext = document.getElementById("btnNext");
 const btnReset = document.getElementById("btnReset");
 
 
-// ========================================
-// FUNCIONES
-// ========================================
+// ===========================================
+// FUNCIONES PRINCIPALES
+// ===========================================
 
-function guardarEstado() {
-  const state = { faseActual, rondaActual };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-}
-
-function cargarEstado() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  if (!data) return;
-
-  try {
-    const state = JSON.parse(data);
-
-    if (typeof state.faseActual === "number") faseActual = state.faseActual;
-    if (typeof state.rondaActual === "number") rondaActual = state.rondaActual;
-
-    if (faseActual < 0) faseActual = 0;
-    if (faseActual > fases.length - 1) faseActual = fases.length - 1;
-
-    if (rondaActual < 1) rondaActual = 1;
-    if (rondaActual > TOTAL_RONDAS) rondaActual = TOTAL_RONDAS;
-
-  } catch (error) {
-    console.log("Error cargando estado:", error);
-  }
-}
-
-function renderSidebar() {
+function renderListaFases() {
   phaseListEl.innerHTML = "";
 
   fases.forEach((fase, index) => {
-    const item = document.createElement("div");
-    item.classList.add("phase-item");
+    const div = document.createElement("div");
+    div.classList.add("phase-item");
+
+    div.textContent = fase.titulo;
 
     if (index === faseActual) {
-      item.classList.add("active");
+      div.classList.add("active");
     }
 
-    item.textContent = fase.titulo;
-
-    item.addEventListener("click", () => {
-      faseActual = index;
-      actualizarVista();
-    });
-
-    phaseListEl.appendChild(item);
+    phaseListEl.appendChild(div);
   });
 }
 
-function renderFaseActual() {
+function renderFaseCentral() {
   const fase = fases[faseActual];
 
   phaseTitleEl.textContent = fase.titulo;
   phaseDetailsEl.innerHTML = "";
 
-  fase.detalles.forEach(det => {
+  fase.detalles.forEach(texto => {
     const li = document.createElement("li");
-    li.textContent = det;
+    li.textContent = texto;
     phaseDetailsEl.appendChild(li);
   });
-
-  phaseProgressEl.textContent = `${faseActual + 1} / ${fases.length}`;
 }
 
 function renderRonda() {
   roundCounterEl.textContent = `${rondaActual} / ${TOTAL_RONDAS}`;
 }
 
-function actualizarBotones() {
-  btnPrev.disabled = (faseActual === 0 && rondaActual === 1);
-  btnNext.disabled = (faseActual === fases.length - 1 && rondaActual === TOTAL_RONDAS);
+function actualizarVista() {
+  renderListaFases();
+  renderFaseCentral();
+  renderRonda();
 }
 
-function siguienteFase() {
+function siguiente() {
   if (faseActual < fases.length - 1) {
     faseActual++;
   } else {
@@ -207,7 +173,7 @@ function siguienteFase() {
   actualizarVista();
 }
 
-function faseAnterior() {
+function anterior() {
   if (faseActual > 0) {
     faseActual--;
   } else {
@@ -221,32 +187,23 @@ function faseAnterior() {
 }
 
 function resetear() {
-  faseActual = 0;
   rondaActual = 1;
+  faseActual = 0;
   actualizarVista();
 }
 
-function actualizarVista() {
-  renderSidebar();
-  renderFaseActual();
-  renderRonda();
-  actualizarBotones();
-  guardarEstado();
-}
 
-
-// ========================================
+// ===========================================
 // EVENTOS
-// ========================================
+// ===========================================
 
-btnNext.addEventListener("click", siguienteFase);
-btnPrev.addEventListener("click", faseAnterior);
+btnNext.addEventListener("click", siguiente);
+btnPrev.addEventListener("click", anterior);
 btnReset.addEventListener("click", resetear);
 
 
-// ========================================
-// INIT
-// ========================================
+// ===========================================
+// INICIO
+// ===========================================
 
-cargarEstado();
 actualizarVista();
