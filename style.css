@@ -2,19 +2,11 @@
    FUENTES
    ========================================================== */
 
-/* Fallback estilo Korolev (parecidas) */
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Bebas+Neue&display=swap');
 
 /*
-  Si consigues Korolev Compressed Demi Bold,
-  puedes subirlo como archivo .woff2 en:
+Si algún día subes la fuente real a assets/fonts, se activa así:
 
-  assets/fonts/KorolevCompressedDemiBold.woff2
-
-  y descomentar esto:
-*/
-
-/*
 @font-face {
   font-family: "Korolev Compressed Demi Bold";
   src: url("assets/fonts/KorolevCompressedDemiBold.woff2") format("woff2");
@@ -25,7 +17,7 @@
 
 
 /* ===============================
-   RESET GENERAL
+   RESET
 ================================ */
 * {
   margin: 0;
@@ -34,32 +26,65 @@
 }
 
 body {
-  background: #0b0d12;
-  color: white;
   min-height: 100vh;
 
-  /* Intentamos Korolev primero, luego fallback */
   font-family: "Korolev Compressed Demi Bold", "Oswald", "Bebas Neue", Arial, sans-serif;
+
+  /* Fondo blanco con degradé leve */
+  background: linear-gradient(to bottom, #ffffff 0%, #f4f4f4 60%, #d9d9d9 100%);
+  color: #111;
 }
 
+
 /* ===============================
-   LOGO HEADER ARRIBA
+   HEADER LOGO
 ================================ */
 .main-logo-header {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 28px 10px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.10);
-  background: linear-gradient(to bottom, #0b0d12, #0a0c10);
+  padding: 18px 10px;
+  border-bottom: 2px solid rgba(0,0,0,0.15);
+  position: relative;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(5px);
 }
 
 .main-logo {
-  width: 360px;
+  width: 340px;
   max-width: 90%;
   height: auto;
-  opacity: 0.98;
 }
+
+/* MUSICA */
+.music-controls {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.music-btn {
+  border: 2px solid rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.music-btn:hover {
+  transform: scale(1.05);
+}
+
+.volume-slider {
+  width: 90px;
+}
+
 
 /* ===============================
    LAYOUT GRID
@@ -67,23 +92,25 @@ body {
 .layout {
   display: grid;
   grid-template-columns: 320px 1fr 320px;
-  gap: 16px;
-  padding: 16px;
+  gap: 18px;
+  padding: 18px;
 }
+
 
 /* ===============================
    LEFT PANEL
 ================================ */
 .left-panel {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.75);
+  border: 2px solid rgba(0,0,0,0.15);
   border-radius: 14px;
   padding: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .round-box {
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(0,0,0,0.05);
+  border: 2px solid rgba(0,0,0,0.12);
   border-radius: 12px;
   padding: 12px;
   text-align: center;
@@ -91,23 +118,22 @@ body {
 
 .round-title {
   font-size: 14px;
-  opacity: 0.75;
+  opacity: 0.7;
   letter-spacing: 1px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .round-counter {
   margin-top: 6px;
   font-size: 28px;
-  font-weight: 900;
-  color: #3ea6ff;
+  font-weight: 700;
+  color: #2563eb;
 }
 
-/* ORDEN DE RONDA MÁS CENTRADO */
 .order-title {
   margin-top: 20px;
   font-size: 18px;
-  font-weight: 900;
+  font-weight: 700;
   text-align: center;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -120,72 +146,78 @@ body {
   gap: 12px;
 }
 
-/* ESTOS SON LOS "CUADROS" */
 .phase-item {
-  border: 3px solid white;
+  border: 3px solid #111;
   border-radius: 8px;
   padding: 10px 12px;
-  background: rgba(0,0,0,0.35);
-  font-weight: 800;
+  background: rgba(255,255,255,0.65);
+  font-weight: 600;
   text-transform: uppercase;
-  font-size: 14px;
-  color: #ff3b3b;
+  font-size: 13px;
+  color: #cc0000;
   position: relative;
-  cursor: default;
 }
 
-/* INDICADOR DE FASE ACTUAL */
 .phase-item.active {
-  border-color: #ff3b3b;
-  background: rgba(255, 0, 0, 0.18);
-  color: white;
+  border-color: #cc0000;
+  background: rgba(255, 0, 0, 0.10);
+  color: #111;
+  font-weight: 700;
 }
 
-/* CUADRADO INDICADOR */
 .phase-item.active::before {
   content: "";
   width: 14px;
   height: 14px;
-  background: #ff3b3b;
+  background: #cc0000;
   border: 2px solid white;
   border-radius: 3px;
   position: absolute;
-  left: -24px;
+  left: -22px;
   top: 50%;
   transform: translateY(-50%);
 }
+
 
 /* ===============================
    CENTER PANEL
 ================================ */
 .center-panel {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.75);
+  border: 2px solid rgba(0,0,0,0.15);
   border-radius: 14px;
   padding: 20px;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
 }
 
-/* TITLE */
 .phase-title {
-  font-size: 34px;
-  font-weight: 900;
-  color: #ff3b3b;
-  margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #cc0000;
+  margin-bottom: 18px;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-/* DETAILS BOX */
 .details-box {
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.04);
+  border: 2px solid rgba(0,0,0,0.12);
   border-radius: 14px;
   padding: 18px;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  min-height: 280px;
+  min-height: 320px;
   text-align: left;
+
+  opacity: 1;
+  transform: translateY(0px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.details-box.fade-out {
+  opacity: 0;
+  transform: translateY(8px);
 }
 
 .details-box ul {
@@ -195,25 +227,27 @@ body {
   gap: 10px;
 }
 
-/* Cada punto */
 .details-box li {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.75);
   padding: 10px 12px;
   border-radius: 10px;
-  border-left: 6px solid #ff3b3b;
+  border-left: 6px solid #cc0000;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.4;
   letter-spacing: 0.4px;
 }
 
-/* TEXTO EN MAYÚSCULAS MÁS FUERTE */
+/* SOLO MAYUSCULAS EN NEGRITA */
 .details-box li strong {
-  font-weight: 900;
-  color: white;
+  font-weight: 700;
+  color: #111;
 }
 
-/* CONTROLS */
+
+/* ===============================
+   CONTROLS
+================================ */
 .controls {
   display: flex;
   justify-content: center;
@@ -227,7 +261,7 @@ body {
   border-radius: 12px;
   border: none;
   font-size: 15px;
-  font-weight: 900;
+  font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
   letter-spacing: 0.5px;
@@ -252,24 +286,26 @@ body {
   color: white;
 }
 
+
 /* ===============================
    RIGHT PANEL
 ================================ */
 .right-panel {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.75);
+  border: 2px solid rgba(0,0,0,0.15);
   border-radius: 14px;
   padding: 16px;
   text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
 .btn-glossary {
   padding: 12px 18px;
   border-radius: 12px;
-  border: 2px solid rgba(255,255,255,0.25);
-  background: rgba(0,0,0,0.35);
-  color: white;
-  font-weight: 900;
+  border: 2px solid rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.95);
+  color: #111;
+  font-weight: 700;
   cursor: pointer;
   transition: 0.2s;
   letter-spacing: 1px;
@@ -277,21 +313,97 @@ body {
 
 .btn-glossary:hover {
   transform: scale(1.04);
-  background: rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.05);
 }
 
-.image-placeholder {
+.tracker-panel {
   margin-top: 20px;
-  padding: 20px;
+  background: rgba(0,0,0,0.04);
+  border: 2px solid rgba(0,0,0,0.12);
   border-radius: 14px;
-  border: 2px dashed rgba(255,255,255,0.20);
-  opacity: 0.6;
-  font-size: 14px;
-  min-height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 14px;
+  text-align: left;
 }
+
+.tracker-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+
+.tracker-row {
+  margin-bottom: 14px;
+}
+
+.tracker-label {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 6px;
+}
+
+.tracker-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tracker-value {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid rgba(0,0,0,0.18);
+  background: rgba(255,255,255,0.85);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.small-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 2px solid rgba(0,0,0,0.20);
+  background: rgba(255,255,255,0.95);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.small-btn:hover {
+  transform: scale(1.06);
+  background: rgba(0,0,0,0.05);
+}
+
+.tracker-divider {
+  border: none;
+  height: 2px;
+  background: rgba(0,0,0,0.12);
+  margin: 16px 0;
+}
+
+.effort-warning {
+  margin-top: -6px;
+  margin-bottom: 14px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255,0,0,0.12);
+  border: 2px solid rgba(255,0,0,0.30);
+  color: #b10000;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
 
 /* ===============================
    FOOTER
@@ -299,11 +411,13 @@ body {
 .footer {
   text-align: center;
   padding: 18px;
-  border-top: 1px solid rgba(255,255,255,0.10);
-  opacity: 0.6;
+  border-top: 2px solid rgba(0,0,0,0.12);
+  opacity: 0.7;
   margin-top: 10px;
   letter-spacing: 0.5px;
+  font-weight: 500;
 }
+
 
 /* ===============================
    RESPONSIVE
@@ -311,6 +425,17 @@ body {
 @media (max-width: 1100px) {
   .layout {
     grid-template-columns: 1fr;
+  }
+
+  .music-controls {
+    position: static;
+    transform: none;
+    margin-left: 10px;
+  }
+
+  .main-logo-header {
+    flex-direction: column;
+    gap: 12px;
   }
 
   .phase-item.active::before {
