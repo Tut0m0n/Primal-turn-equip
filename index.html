@@ -87,7 +87,9 @@
         </div>
 
         <div class="header-center">
-          <h1 class="hidden-title">PRIMAL - Orden de Turno</h1>
+          <div id="playerTurnCounter" class="player-turn-counter">
+            Turno Jugador 1 / 2
+          </div>
         </div>
 
         <div class="header-right">
@@ -177,6 +179,19 @@
 
     </section>
 
+  </div>
+
+  <!-- MODAL RESET -->
+  <div id="resetModal" class="modal-overlay">
+    <div class="modal-box fade-in">
+      <h2 class="modal-title">Confirmación</h2>
+      <p class="modal-text">Si presionas reset se reseteará todo, ¿deseas hacerlo?</p>
+
+      <div class="modal-buttons">
+        <button id="resetYesBtn" class="btn-danger">SI</button>
+        <button id="resetNoBtn" class="btn-secondary">NO</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
