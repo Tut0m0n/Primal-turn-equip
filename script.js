@@ -117,8 +117,14 @@ const btnReset = document.getElementById("btnReset");
 
 
 // ===========================================
-// FUNCIONES PRINCIPALES
+// FUNCIONES
 // ===========================================
+
+function destacarMayusculas(texto) {
+  // Esto detecta palabras en mayúsculas (2 o más letras)
+  // y las envuelve en <strong> para destacarlas.
+  return texto.replace(/\b([A-ZÁÉÍÓÚÑ]{2,})\b/g, "<strong>$1</strong>");
+}
 
 function renderListaFases() {
   phaseListEl.innerHTML = "";
@@ -126,7 +132,6 @@ function renderListaFases() {
   fases.forEach((fase, index) => {
     const div = document.createElement("div");
     div.classList.add("phase-item");
-
     div.textContent = fase.titulo;
 
     if (index === faseActual) {
@@ -145,7 +150,10 @@ function renderFaseCentral() {
 
   fase.detalles.forEach(texto => {
     const li = document.createElement("li");
-    li.textContent = texto;
+
+    // Aplicar negrita automática a mayúsculas
+    li.innerHTML = destacarMayusculas(texto);
+
     phaseDetailsEl.appendChild(li);
   });
 }
@@ -203,7 +211,7 @@ btnReset.addEventListener("click", resetear);
 
 
 // ===========================================
-// INICIO
+// INIT
 // ===========================================
 
 actualizarVista();
