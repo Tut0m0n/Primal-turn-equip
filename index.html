@@ -2,136 +2,182 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PRIMAL - Orden de Turno</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-  <!-- HEADER LOGO -->
-  <header class="main-logo-header">
-    <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
+  <!-- AUDIO (siempre activo) -->
+  <audio id="bgMusic" loop>
+    <source src="assets/audio/intro.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio.
+  </audio>
 
-    <!-- MUSICA / VOLUMEN -->
-    <div class="music-controls">
-      <button id="musicToggle" class="music-btn" title="Reproducir / Pausar música">🔊</button>
-      <input id="volumeSlider" class="volume-slider" type="range" min="0" max="1" step="0.01" value="0.5">
-    </div>
-  </header>
-
-
-  <!-- MAIN GRID -->
-  <div class="layout">
-
-    <!-- LEFT PANEL -->
-    <aside class="left-panel">
-
-      <div class="round-box">
-        <div class="round-title">RONDA</div>
-        <div id="roundCounter" class="round-counter">1 / 10</div>
-      </div>
-
-      <h2 class="order-title">ORDEN DE RONDA</h2>
-
-      <div id="phaseList" class="phase-list"></div>
-
-    </aside>
-
-
-    <!-- CENTER PANEL -->
-    <main class="center-panel">
-
-      <h2 id="phaseTitle" class="phase-title">-</h2>
-
-      <div id="detailsBox" class="details-box">
-        <ul id="phaseDetails"></ul>
-      </div>
-
-      <div class="controls">
-        <button id="btnPrev" class="btn btn-dark">
-          ⬅ Retroceder
-        </button>
-
-        <button id="btnNext" class="btn btn-blue">
-          Siguiente ➡
-        </button>
-
-        <button id="btnReset" class="btn btn-red">
-          Reset ⟳
-        </button>
-      </div>
-
-    </main>
-
-
-    <!-- RIGHT PANEL -->
-    <aside class="right-panel">
-
-      <button id="btnGlossary" class="btn-glossary">GLOSARIO</button>
-
-      <!-- CONTADORES -->
-      <div class="tracker-panel">
-
-        <h3 class="tracker-title">MONSTRUO</h3>
-
-        <!-- HERIDAS -->
-        <div class="tracker-row">
-          <div class="tracker-label">HERIDAS</div>
-          <div id="woundsCounter" class="tracker-value">0 / 10</div>
-        </div>
-
-        <!-- DAÑO -->
-        <div class="tracker-row">
-          <div class="tracker-label">DAÑO</div>
-
-          <div class="tracker-controls">
-            <button id="damageMinus" class="small-btn">-</button>
-            <div id="damageCounter" class="tracker-value">0 / 10</div>
-            <button id="damagePlus" class="small-btn">+</button>
-          </div>
-        </div>
-
-        <hr class="tracker-divider">
-
-        <!-- ESFUERZO -->
-        <div class="tracker-row">
-          <div class="tracker-label">ESFUERZO</div>
-
-          <div class="tracker-controls">
-            <button id="effortMinus" class="small-btn">-</button>
-            <div id="effortCounter" class="tracker-value">0 / 10</div>
-            <button id="effortPlus" class="small-btn">+</button>
-          </div>
-        </div>
-
-        <div id="effortWarning" class="effort-warning hidden">
-          DESATADO!! Genera el daño del monstruo a todos los jugadores!!
-        </div>
-
-        <!-- ACELERACION -->
-        <div class="tracker-row">
-          <div class="tracker-label">ACELERACIÓN</div>
-
-          <div class="tracker-controls">
-            <button id="accelMinus" class="small-btn">-</button>
-            <div id="accelCounter" class="tracker-value">0 / 10</div>
-            <button id="accelPlus" class="small-btn">+</button>
-          </div>
-        </div>
-
-      </div>
-
-    </aside>
-
+  <!-- BOTON MUSICA -->
+  <div class="music-control">
+    <button id="musicToggleBtn" title="Música">🔊</button>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5">
   </div>
 
+  <!-- APP WRAPPER -->
+  <div class="app">
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    Hecho para uso personal - Primal Companion
-  </footer>
+    <!-- PANTALLA 1: ENTRADA -->
+    <section id="screen-home" class="screen active">
+      <div class="center-box fade-in">
+        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
+        <button id="enterBtn" class="btn-primary big">ENTRAR</button>
+      </div>
+    </section>
+
+    <!-- PANTALLA 2: JUGADORES -->
+    <section id="screen-players" class="screen">
+      <div class="center-box fade-in">
+        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
+
+        <h2 class="question-title">Selecciona número de jugadores:</h2>
+
+        <div class="options-grid" id="playersOptions">
+          <div class="option-box" data-value="SOLO">SOLO</div>
+          <div class="option-box" data-value="2">2</div>
+          <div class="option-box" data-value="3">3</div>
+          <div class="option-box" data-value="4">4</div>
+          <div class="option-box" data-value="5">5</div>
+        </div>
+
+        <div class="nav-buttons">
+          <button id="cancelPlayersBtn" class="btn-secondary">Cancelar</button>
+          <button id="nextPlayersBtn" class="btn-primary">Siguiente</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 3: MONSTRUO -->
+    <section id="screen-monster" class="screen">
+      <div class="center-box fade-in">
+        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
+
+        <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
+
+        <div class="options-grid monster-grid" id="monsterOptions">
+          <div class="option-box" data-value="Vyraxen">Vyraxen</div>
+          <div class="option-box" data-value="Korowon">Korowon</div>
+          <div class="option-box" data-value="Ozew">Ozew</div>
+          <div class="option-box" data-value="Hydar">Hydar</div>
+          <div class="option-box" data-value="Pazis">Pazis</div>
+          <div class="option-box" data-value="Taraska">Taraska</div>
+          <div class="option-box" data-value="Toramat">Toramat</div>
+        </div>
+
+        <div class="nav-buttons">
+          <button id="cancelMonsterBtn" class="btn-secondary">Cancelar</button>
+          <button id="nextMonsterBtn" class="btn-primary">Siguiente</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA 4: TRACKER PRINCIPAL -->
+    <section id="screen-tracker" class="screen">
+
+      <header class="top-header">
+        <div class="header-left">
+          <img src="assets/images/LOGO.png" alt="Primal Logo" class="header-logo">
+        </div>
+
+        <div class="header-center">
+          <h1 class="hidden-title">PRIMAL - Orden de Turno</h1>
+        </div>
+
+        <div class="header-right">
+          <button id="glossaryBtn" class="glossary-btn">GLOSARIO</button>
+        </div>
+      </header>
+
+      <main class="layout">
+
+        <!-- PANEL IZQUIERDO -->
+        <aside class="left-panel">
+          <div class="round-counter-box">
+            <div class="round-title">RONDA</div>
+            <div class="round-value">
+              <span id="roundNumber">1</span> / 10
+            </div>
+          </div>
+
+          <h2 class="left-title">Orden de Ronda</h2>
+
+          <div id="phaseList" class="phase-list"></div>
+        </aside>
+
+        <!-- PANEL CENTRAL -->
+        <section class="center-panel">
+          <div class="center-logo">
+            <img src="assets/images/LOGO.png" alt="Primal Logo" class="mid-logo">
+          </div>
+
+          <div class="phase-box fade-slide" id="phaseBox">
+            <h2 id="currentPhaseTitle" class="phase-title">-</h2>
+            <div id="currentPhaseContent" class="phase-content">Presiona Siguiente para comenzar.</div>
+          </div>
+
+          <div class="controls">
+            <button id="prevBtn" class="btn-secondary">← Anterior</button>
+            <button id="nextBtn" class="btn-primary">Siguiente →</button>
+            <button id="resetBtn" class="btn-danger">Reset ↻</button>
+          </div>
+        </section>
+
+        <!-- PANEL DERECHO -->
+        <aside class="right-panel">
+
+          <div class="counter-card">
+            <h3 class="counter-title">Contador de Heridas Monstruo</h3>
+            <div class="counter-display">
+              <span id="woundsValue">0</span> / 10
+            </div>
+          </div>
+
+          <div class="counter-card">
+            <h3 class="counter-title">Contador de Daño Monstruo</h3>
+            <div class="counter-controls">
+              <button class="mini-btn" id="damageMinus">-</button>
+              <span id="damageValue">0</span> / 10
+              <button class="mini-btn" id="damagePlus">+</button>
+            </div>
+          </div>
+
+          <div class="counter-card">
+            <h3 class="counter-title">Contador de Esfuerzo</h3>
+            <div class="counter-controls">
+              <button class="mini-btn" id="effortMinus">-</button>
+              <span id="effortValue">0</span> / 10
+              <button class="mini-btn" id="effortPlus">+</button>
+            </div>
+            <div id="effortWarning" class="warning-text"></div>
+          </div>
+
+          <div class="counter-card">
+            <h3 class="counter-title">Contador de Aceleración</h3>
+            <div class="counter-controls">
+              <button class="mini-btn" id="accelMinus">-</button>
+              <span id="accelValue">0</span> / 10
+              <button class="mini-btn" id="accelPlus">+</button>
+            </div>
+          </div>
+
+        </aside>
+
+      </main>
+
+      <footer class="footer">
+        Hecho para uso personal - Primal Companion
+      </footer>
+
+    </section>
+
+  </div>
 
   <script src="script.js"></script>
 </body>
