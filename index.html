@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PRIMAL - Orden de Turno</title>
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- IMPORTANTE: tu archivo se llama style.css -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -17,58 +17,46 @@
     <p>Tracker de ronda (Campaña / Combate)</p>
   </header>
 
-  <!-- MAIN LAYOUT -->
-  <div class="app-container">
+  <!-- MAIN GRID -->
+  <div class="layout">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <!-- LEFT PANEL -->
+    <aside class="left-panel">
 
-      <div class="round-counter-box">
+      <div class="round-box">
         <div class="round-title">RONDA</div>
-        <div id="roundCounter" class="round-value">1 / 10</div>
+        <div id="roundCounter" class="round-counter">1 / 10</div>
       </div>
 
-      <h2 class="sidebar-title">Orden de Ronda</h2>
+      <h2 class="order-title">Orden de Ronda</h2>
 
+      <!-- AQUÍ VAN LAS "IMÁGENES" (CAJAS) DEL ORDEN -->
       <div id="phaseList" class="phase-list"></div>
 
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
 
-      <!-- TOP BAR -->
-      <div class="top-content-bar">
+    <!-- CENTER PANEL -->
+    <main class="center-panel">
 
-        <div class="logo-box">
-          <img src="assets/images/LOGO.PNG" alt="Primal Logo" class="logo">
-        </div>
-
-        <button class="glossary-btn">GLOSARIO</button>
-
+      <!-- LOGO -->
+      <div class="logo-container">
+        <img src="assets/images/LOGO.PNG" alt="Primal Logo" class="logo">
       </div>
 
-      <!-- PHASE DISPLAY -->
-      <section class="phase-display">
+      <!-- PHASE TITLE -->
+      <h2 id="phaseTitle" class="phase-title">-</h2>
 
-        <h2 id="phaseTitle" class="phase-title">-</h2>
-
-        <div class="phase-info">
-          <span>Progreso:</span>
-          <strong id="phaseProgress">0 / 0</strong>
-        </div>
-
-        <div class="phase-card">
-          <ul id="phaseDetails"></ul>
-        </div>
-
-      </section>
+      <!-- DETAILS BOX -->
+      <div class="details-box">
+        <ul id="phaseDetails"></ul>
+      </div>
 
       <!-- CONTROLS -->
-      <section class="controls">
+      <div class="controls">
 
         <button id="btnPrev" class="btn btn-dark">
-          ⬅ Anterior
+          ⬅ Retroceder
         </button>
 
         <button id="btnNext" class="btn btn-blue">
@@ -79,18 +67,31 @@
           Reset ⟳
         </button>
 
-      </section>
+      </div>
 
     </main>
 
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+
+      <button id="btnGlossary" class="btn-glossary">GLOSARIO</button>
+
+      <!-- ESPACIO RESERVADO PARA IMAGEN FUTURA -->
+      <div class="image-placeholder">
+        (Espacio reservado para imagen futura)
+      </div>
+
+    </aside>
+
   </div>
+
 
   <!-- FOOTER -->
   <footer class="footer">
     Hecho para uso personal - Primal Companion
   </footer>
 
-  <!-- SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
