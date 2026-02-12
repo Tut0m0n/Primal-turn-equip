@@ -1,3 +1,29 @@
+/* ==========================================================
+   FUENTES
+   ========================================================== */
+
+/* Fallback estilo Korolev (parecidas) */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Bebas+Neue&display=swap');
+
+/*
+  Si consigues Korolev Compressed Demi Bold,
+  puedes subirlo como archivo .woff2 en:
+
+  assets/fonts/KorolevCompressedDemiBold.woff2
+
+  y descomentar esto:
+*/
+
+/*
+@font-face {
+  font-family: "Korolev Compressed Demi Bold";
+  src: url("assets/fonts/KorolevCompressedDemiBold.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+*/
+
+
 /* ===============================
    RESET GENERAL
 ================================ */
@@ -5,34 +31,34 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
   background: #0b0d12;
   color: white;
   min-height: 100vh;
+
+  /* Intentamos Korolev primero, luego fallback */
+  font-family: "Korolev Compressed Demi Bold", "Oswald", "Bebas Neue", Arial, sans-serif;
 }
 
 /* ===============================
-   HEADER
+   LOGO HEADER ARRIBA
 ================================ */
-.top-header {
-  text-align: center;
-  padding: 25px 10px;
+.main-logo-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 28px 10px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.10);
   background: linear-gradient(to bottom, #0b0d12, #0a0c10);
 }
 
-.top-header h1 {
-  font-size: 34px;
-  font-weight: 900;
-}
-
-.top-header p {
-  margin-top: 6px;
-  font-size: 14px;
-  opacity: 0.75;
+.main-logo {
+  width: 360px;
+  max-width: 90%;
+  height: auto;
+  opacity: 0.98;
 }
 
 /* ===============================
@@ -67,20 +93,24 @@ body {
   font-size: 14px;
   opacity: 0.75;
   letter-spacing: 1px;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .round-counter {
   margin-top: 6px;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 900;
   color: #3ea6ff;
 }
 
+/* ORDEN DE RONDA MÁS CENTRADO */
 .order-title {
   margin-top: 20px;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .phase-list {
@@ -90,13 +120,13 @@ body {
   gap: 12px;
 }
 
-/* ESTOS SON LOS "CUADROS" (NO BOTONES) */
+/* ESTOS SON LOS "CUADROS" */
 .phase-item {
   border: 3px solid white;
   border-radius: 8px;
   padding: 10px 12px;
   background: rgba(0,0,0,0.35);
-  font-weight: bold;
+  font-weight: 800;
   text-transform: uppercase;
   font-size: 14px;
   color: #ff3b3b;
@@ -136,26 +166,14 @@ body {
   text-align: center;
 }
 
-/* LOGO */
-.logo-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 15px;
-}
-
-.logo {
-  width: 240px;
-  height: auto;
-  opacity: 0.95;
-}
-
 /* TITLE */
 .phase-title {
-  font-size: 32px;
+  font-size: 34px;
   font-weight: 900;
   color: #ff3b3b;
   margin-bottom: 20px;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* DETAILS BOX */
@@ -177,14 +195,22 @@ body {
   gap: 10px;
 }
 
+/* Cada punto */
 .details-box li {
   background: rgba(255,255,255,0.05);
   padding: 10px 12px;
   border-radius: 10px;
   border-left: 6px solid #ff3b3b;
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.4;
+  letter-spacing: 0.4px;
+}
+
+/* TEXTO EN MAYÚSCULAS MÁS FUERTE */
+.details-box li strong {
+  font-weight: 900;
+  color: white;
 }
 
 /* CONTROLS */
@@ -204,6 +230,7 @@ body {
   font-weight: 900;
   cursor: pointer;
   transition: 0.2s;
+  letter-spacing: 0.5px;
 }
 
 .btn:hover {
@@ -245,6 +272,7 @@ body {
   font-weight: 900;
   cursor: pointer;
   transition: 0.2s;
+  letter-spacing: 1px;
 }
 
 .btn-glossary:hover {
@@ -274,6 +302,7 @@ body {
   border-top: 1px solid rgba(255,255,255,0.10);
   opacity: 0.6;
   margin-top: 10px;
+  letter-spacing: 0.5px;
 }
 
 /* ===============================
