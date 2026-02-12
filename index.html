@@ -10,10 +10,17 @@
 
 <body>
 
-  <!-- LOGO PRINCIPAL ARRIBA (REEMPLAZA EL TITULO GRANDE) -->
+  <!-- HEADER LOGO -->
   <header class="main-logo-header">
-    <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
+    <img src="assets/images/LOGO.PNG" alt="Primal Logo" class="main-logo">
+
+    <!-- MUSICA / VOLUMEN -->
+    <div class="music-controls">
+      <button id="musicToggle" class="music-btn" title="Reproducir / Pausar música">🔊</button>
+      <input id="volumeSlider" class="volume-slider" type="range" min="0" max="1" step="0.01" value="0.5">
+    </div>
   </header>
+
 
   <!-- MAIN GRID -->
   <div class="layout">
@@ -28,7 +35,6 @@
 
       <h2 class="order-title">ORDEN DE RONDA</h2>
 
-      <!-- CUADROS DEL ORDEN -->
       <div id="phaseList" class="phase-list"></div>
 
     </aside>
@@ -37,17 +43,13 @@
     <!-- CENTER PANEL -->
     <main class="center-panel">
 
-      <!-- PHASE TITLE -->
       <h2 id="phaseTitle" class="phase-title">-</h2>
 
-      <!-- DETAILS BOX -->
-      <div class="details-box">
+      <div id="detailsBox" class="details-box">
         <ul id="phaseDetails"></ul>
       </div>
 
-      <!-- CONTROLS -->
       <div class="controls">
-
         <button id="btnPrev" class="btn btn-dark">
           ⬅ Retroceder
         </button>
@@ -59,7 +61,6 @@
         <button id="btnReset" class="btn btn-red">
           Reset ⟳
         </button>
-
       </div>
 
     </main>
@@ -70,8 +71,56 @@
 
       <button id="btnGlossary" class="btn-glossary">GLOSARIO</button>
 
-      <div class="image-placeholder">
-        (Espacio reservado para imagen futura)
+      <!-- CONTADORES -->
+      <div class="tracker-panel">
+
+        <h3 class="tracker-title">MONSTRUO</h3>
+
+        <!-- HERIDAS -->
+        <div class="tracker-row">
+          <div class="tracker-label">HERIDAS</div>
+          <div id="woundsCounter" class="tracker-value">0 / 10</div>
+        </div>
+
+        <!-- DAÑO -->
+        <div class="tracker-row">
+          <div class="tracker-label">DAÑO</div>
+
+          <div class="tracker-controls">
+            <button id="damageMinus" class="small-btn">-</button>
+            <div id="damageCounter" class="tracker-value">0 / 10</div>
+            <button id="damagePlus" class="small-btn">+</button>
+          </div>
+        </div>
+
+        <hr class="tracker-divider">
+
+        <!-- ESFUERZO -->
+        <div class="tracker-row">
+          <div class="tracker-label">ESFUERZO</div>
+
+          <div class="tracker-controls">
+            <button id="effortMinus" class="small-btn">-</button>
+            <div id="effortCounter" class="tracker-value">0 / 10</div>
+            <button id="effortPlus" class="small-btn">+</button>
+          </div>
+        </div>
+
+        <div id="effortWarning" class="effort-warning hidden">
+          DESATADO!! Genera el daño del monstruo a todos los jugadores!!
+        </div>
+
+        <!-- ACELERACION -->
+        <div class="tracker-row">
+          <div class="tracker-label">ACELERACIÓN</div>
+
+          <div class="tracker-controls">
+            <button id="accelMinus" class="small-btn">-</button>
+            <div id="accelCounter" class="tracker-value">0 / 10</div>
+            <button id="accelPlus" class="small-btn">+</button>
+          </div>
+        </div>
+
       </div>
 
     </aside>
