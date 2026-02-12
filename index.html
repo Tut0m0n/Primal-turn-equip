@@ -3,228 +3,206 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PRIMAL - Companion</title>
-
+  <title>Primal Companion - Orden de Turno</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- AUDIO (siempre activo) -->
+  <!-- CONTROL AUDIO -->
+  <div class="audio-control">
+    <button id="btnAudio">🔊</button>
+    <input type="range" id="audioVolume" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
   <audio id="bgMusic" loop>
     <source src="assets/audio/intro.mp3" type="audio/mpeg">
-    Tu navegador no soporta audio.
   </audio>
 
-  <!-- CONTROL MUSICA -->
-  <div class="music-control">
-    <button id="musicToggleBtn" title="Música">🔊</button>
-    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5">
-  </div>
+  <!-- PANTALLA 1 -->
+  <section id="pantallaInicio" class="screen active">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" alt="Primal Logo" class="logo-big">
+      <button id="btnEntrar" class="btn-enter">ENTRAR</button>
+    </div>
+  </section>
 
-  <!-- APP -->
-  <div class="app">
+  <!-- PANTALLA 2 -->
+  <section id="pantallaJugadores" class="screen">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" alt="Primal Logo" class="logo-medium">
 
-    <!-- PANTALLA 1: HOME -->
-    <section id="screen-home" class="screen active">
-      <div class="center-box fade-in">
-        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo-home">
-        <button id="enterBtn" class="btn-enter">ENTRAR</button>
+      <h2 class="question-title">Selecciona número de jugadores:</h2>
+
+      <div class="option-list" id="listaJugadores">
+        <label class="option-item">
+          <span>SOLO</span>
+          <input type="checkbox" name="jugadores" value="2">
+        </label>
+
+        <label class="option-item">
+          <span>2</span>
+          <input type="checkbox" name="jugadores" value="2">
+        </label>
+
+        <label class="option-item">
+          <span>3</span>
+          <input type="checkbox" name="jugadores" value="3">
+        </label>
+
+        <label class="option-item">
+          <span>4</span>
+          <input type="checkbox" name="jugadores" value="4">
+        </label>
+
+        <label class="option-item">
+          <span>5</span>
+          <input type="checkbox" name="jugadores" value="5">
+        </label>
       </div>
-    </section>
 
-    <!-- PANTALLA 2: JUGADORES -->
-    <section id="screen-players" class="screen">
-      <div class="center-box fade-in">
-        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
-
-        <h2 class="question-title">Selecciona número de jugadores:</h2>
-
-        <div class="option-list" id="playersOptions">
-          <div class="option-row" data-value="SOLO">
-            <span>SOLO</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="2">
-            <span>2</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="3">
-            <span>3</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="4">
-            <span>4</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="5">
-            <span>5</span>
-            <div class="checkbox"></div>
-          </div>
-        </div>
-
-        <div class="nav-buttons">
-          <button id="cancelPlayersBtn" class="btn-cancel">Cancelar</button>
-          <button id="nextPlayersBtn" class="btn-primary small-btn">Siguiente</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANTALLA 3: MONSTRUO -->
-    <section id="screen-monster" class="screen">
-      <div class="center-box fade-in">
-        <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
-
-        <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
-
-        <div class="option-list" id="monsterOptions">
-          <div class="option-row" data-value="Vyraxen">
-            <span>Vyraxen</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Korowon">
-            <span>Korowon</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Ozew">
-            <span>Ozew</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Hydar">
-            <span>Hydar</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Pazis">
-            <span>Pazis</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Taraska">
-            <span>Taraska</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Toramat">
-            <span>Toramat</span>
-            <div class="checkbox"></div>
-          </div>
-        </div>
-
-        <div class="nav-buttons">
-          <button id="cancelMonsterBtn" class="btn-cancel">Cancelar</button>
-          <button id="nextMonsterBtn" class="btn-primary small-btn">Siguiente</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PANTALLA 4: TRACKER -->
-    <section id="screen-tracker" class="screen">
-
-      <header class="top-header">
-        <div class="header-left">
-          <img src="assets/images/LOGO.png" alt="Primal Logo" class="header-logo">
-        </div>
-
-        <div class="header-center">
-          <div id="playerTurnCounter" class="player-turn-counter">
-            Turno Jugador 1 / 2
-          </div>
-        </div>
-
-        <div class="header-right">
-          <button id="glossaryBtn" class="glossary-btn">GLOSARIO</button>
-        </div>
-      </header>
-
-      <main class="layout">
-
-        <!-- PANEL IZQUIERDO -->
-        <aside class="left-panel">
-          <div class="round-counter-box">
-            <div class="round-title">RONDA</div>
-            <div class="round-value">
-              <span id="roundNumber">1</span> / 10
-            </div>
-          </div>
-
-          <h2 class="left-title">ORDEN DE TURNO</h2>
-
-          <div id="phaseList" class="phase-list"></div>
-        </aside>
-
-        <!-- PANEL CENTRAL -->
-        <section class="center-panel">
-          <div class="phase-box fade-slide" id="phaseBox">
-            <h2 id="currentPhaseTitle" class="phase-title">-</h2>
-            <div id="currentPhaseContent" class="phase-content">Presiona Siguiente para comenzar.</div>
-          </div>
-
-          <div class="controls">
-            <button id="prevBtn" class="btn-secondary small-btn">← Anterior</button>
-            <button id="nextBtn" class="btn-primary small-btn">Siguiente →</button>
-            <button id="resetBtn" class="btn-danger small-btn">Reset ↻</button>
-          </div>
-        </section>
-
-        <!-- PANEL DERECHO -->
-        <aside class="right-panel">
-
-          <div class="counter-card">
-            <h3 class="counter-title">Contador de Heridas Monstruo</h3>
-            <div class="counter-display">
-              <span id="woundsValue">0</span> / 10
-            </div>
-          </div>
-
-          <div class="counter-card">
-            <h3 class="counter-title">Contador de Daño Monstruo</h3>
-            <div class="counter-controls">
-              <button class="mini-btn" id="damageMinus">-</button>
-              <span id="damageValue">0</span> / 10
-              <button class="mini-btn" id="damagePlus">+</button>
-            </div>
-          </div>
-
-          <div class="counter-card">
-            <h3 class="counter-title">Contador de Esfuerzo</h3>
-            <div class="counter-controls">
-              <button class="mini-btn" id="effortMinus">-</button>
-              <span id="effortValue">0</span> / 10
-              <button class="mini-btn" id="effortPlus">+</button>
-            </div>
-            <div id="effortWarning" class="warning-text"></div>
-          </div>
-
-          <div class="counter-card">
-            <h3 class="counter-title">Contador de Aceleración</h3>
-            <div class="counter-controls">
-              <button class="mini-btn" id="accelMinus">-</button>
-              <span id="accelValue">0</span> / 10
-              <button class="mini-btn" id="accelPlus">+</button>
-            </div>
-          </div>
-
-        </aside>
-
-      </main>
-
-      <footer class="footer">
-        Hecho para uso personal - Primal Companion
-      </footer>
-
-    </section>
-
-  </div>
-
-  <!-- MODAL RESET -->
-  <div id="resetModal" class="modal-overlay">
-    <div class="modal-box fade-in">
-      <h2 class="modal-title">Confirmación</h2>
-      <p class="modal-text">Si presionas reset se reseteará todo, ¿deseas hacerlo?</p>
-
-      <div class="modal-buttons">
-        <button id="resetYesBtn" class="btn-danger small-btn">SI</button>
-        <button id="resetNoBtn" class="btn-secondary small-btn">NO</button>
+      <div class="buttons-row">
+        <button id="btnCancelarJugadores" class="btn btn-danger small">Cancelar</button>
+        <button id="btnSiguienteJugadores" class="btn btn-primary small">Siguiente</button>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- PANTALLA 3 -->
+  <section id="pantallaMonstruo" class="screen">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" alt="Primal Logo" class="logo-medium">
+
+      <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
+
+      <div class="option-list" id="listaMonstruos">
+        <label class="option-item">
+          <span>Vyraxen</span>
+          <input type="checkbox" name="monstruo" value="Vyraxen">
+        </label>
+
+        <label class="option-item">
+          <span>Korowon</span>
+          <input type="checkbox" name="monstruo" value="Korowon">
+        </label>
+
+        <label class="option-item">
+          <span>Ozew</span>
+          <input type="checkbox" name="monstruo" value="Ozew">
+        </label>
+
+        <label class="option-item">
+          <span>Hydar</span>
+          <input type="checkbox" name="monstruo" value="Hydar">
+        </label>
+
+        <label class="option-item">
+          <span>Pazis</span>
+          <input type="checkbox" name="monstruo" value="Pazis">
+        </label>
+
+        <label class="option-item">
+          <span>Taraska</span>
+          <input type="checkbox" name="monstruo" value="Taraska">
+        </label>
+
+        <label class="option-item">
+          <span>Toramat</span>
+          <input type="checkbox" name="monstruo" value="Toramat">
+        </label>
+      </div>
+
+      <div class="buttons-row">
+        <button id="btnCancelarMonstruo" class="btn btn-danger small">Cancelar</button>
+        <button id="btnSiguienteMonstruo" class="btn btn-primary small">Siguiente</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PANTALLA 4 -->
+  <section id="pantallaTracker" class="screen">
+
+    <!-- HEADER PRINCIPAL -->
+    <header class="tracker-header">
+      <img src="assets/images/LOGO.png" alt="Primal Logo" class="logo-top-centered">
+
+      <button id="btnGlosario" class="btn-glossary">GLOSARIO</button>
+    </header>
+
+    <hr class="divider">
+
+    <main class="tracker-layout">
+
+      <!-- PANEL IZQUIERDO -->
+      <aside class="left-panel">
+        <div class="round-box">
+          <h3>RONDA</h3>
+          <p id="contadorRonda">1 / 10</p>
+        </div>
+
+        <div class="player-turn-box">
+          <h3 id="contadorJugador">TURNO JUGADOR 1 / 2</h3>
+        </div>
+
+        <h3 class="order-title">ORDEN DE TURNO</h3>
+        <div id="listaOrden" class="order-list"></div>
+      </aside>
+
+      <!-- PANEL CENTRAL -->
+      <section class="center-panel">
+        <div id="faseCard" class="phase-card">
+          <h2 id="faseTitulo">-</h2>
+          <div id="faseContenido" class="phase-content">Selecciona una fase para comenzar.</div>
+        </div>
+
+        <div class="controls">
+          <button id="btnAnterior" class="btn btn-secondary">⬅ Anterior</button>
+          <button id="btnSiguiente" class="btn btn-primary">Siguiente ➡</button>
+          <button id="btnReset" class="btn btn-danger">🔄 Reset</button>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO -->
+      <aside class="right-panel">
+
+        <div class="counter-box">
+          <h3>Contador de Heridas Monstruo</h3>
+          <p id="contadorHeridas">0 / 10</p>
+        </div>
+
+        <div class="counter-box">
+          <h3>Contador de Daño Monstruo</h3>
+          <div class="counter-controls">
+            <button id="btnDanoMenos" class="btn-counter">-</button>
+            <span id="contadorDano">0 / 10</span>
+            <button id="btnDanoMas" class="btn-counter">+</button>
+          </div>
+        </div>
+
+        <div class="counter-box">
+          <h3>Contador de Esfuerzo</h3>
+          <div class="counter-controls">
+            <button id="btnEsfuerzoMenos" class="btn-counter">-</button>
+            <span id="contadorEsfuerzo">0 / 10</span>
+            <button id="btnEsfuerzoMas" class="btn-counter">+</button>
+          </div>
+          <p id="mensajeDesatado" class="alert-desatado"></p>
+        </div>
+
+        <div class="counter-box">
+          <h3>Contador de Aceleración</h3>
+          <div class="counter-controls">
+            <button id="btnAceleracionMenos" class="btn-counter">-</button>
+            <span id="contadorAceleracion">0 / 10</span>
+            <button id="btnAceleracionMas" class="btn-counter">+</button>
+          </div>
+        </div>
+
+      </aside>
+
+    </main>
+
+  </section>
 
   <script src="script.js"></script>
 </body>
