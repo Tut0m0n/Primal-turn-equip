@@ -1,1 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Primal - Turn Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="header-top-decoration"></div>
+    <h1>PRIMAL</h1>
+    <h2>Turn Tracker</h2>
+    <div class="header-bottom-decoration"></div>
+  </header>
+
+  <main class="container">
+
+    <section class="phase-card">
+      <div class="phase-info">
+        <p class="phase-number" id="phaseNumber">Paso 1 / 6</p>
+        <h2 class="phase-title" id="phaseTitle">INICIO DE LA RONDA</h2>
+        <p class="phase-description" id="phaseDescription">
+          Sigue las instrucciones y marca los chequeos.
+        </p>
+      </div>
+
+      <div class="checklist" id="checklist">
+        <!-- Checklist se genera dinámicamente -->
+      </div>
+    </section>
+
+    <section class="buttons">
+      <button id="prevBtn" class="btn">
+        ⬅ Atrás
+      </button>
+
+      <button id="resetBtn" class="btn btn-reset">
+        🔁 Reset
+      </button>
+
+      <button id="nextBtn" class="btn btn-next">
+        Siguiente ➡
+      </button>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Primal Turn Tracker - Proyecto personal</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
 
