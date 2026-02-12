@@ -2,51 +2,56 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Primal - Orden de Turno</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="style.css">
+  <title>PRIMAL - Orden de Turno</title>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <header class="app-header">
+
+  <header class="header">
     <h1>PRIMAL - Orden de Turno</h1>
-    <p>Tracker de ronda (Campaña / Combate)</p>
+    <p class="subtitle">Tracker de ronda (Campaña / Combate)</p>
   </header>
 
   <main class="container">
 
+    <!-- BOTONES -->
     <section class="controls">
-      <button id="btnPrev" class="btn">⬆ Anterior</button>
-      <button id="btnNext" class="btn primary">Siguiente ⬇</button>
-      <button id="btnReset" class="btn danger">Reset 🔄</button>
+      <button id="btnAnterior" class="btn btn-secondary">⬅ Anterior</button>
+      <button id="btnSiguiente" class="btn btn-primary">Siguiente ➡</button>
+      <button id="btnReset" class="btn btn-danger">🔄 Reset</button>
     </section>
 
-    <section class="status">
-      <div class="status-box">
-        <span class="label">Fase actual:</span>
-        <span id="currentStepName" class="value">-</span>
+    <!-- INFO -->
+    <section class="info-box">
+      <div class="info-card">
+        <h2>Fase actual:</h2>
+        <p id="faseActual">-</p>
       </div>
 
-      <div class="status-box">
-        <span class="label">Progreso:</span>
-        <span id="progressText" class="value">0 / 0</span>
+      <div class="info-card">
+        <h2>Progreso:</h2>
+        <p id="progreso">0 / 0</p>
       </div>
     </section>
 
+    <!-- LISTA -->
     <section class="turn-order">
       <h2>Orden de Turno</h2>
-      <div id="stepsContainer" class="steps-container">
-        <!-- Aquí se cargan las fases desde script.js -->
-      </div>
+      <div id="listaOrden"></div>
     </section>
 
   </main>
 
-  <footer class="app-footer">
+  <footer class="footer">
     <p>Hecho para uso personal - Primal Companion</p>
   </footer>
 
+  <!-- IMPORTANTE: script al final -->
   <script src="script.js"></script>
+
 </body>
 </html>
