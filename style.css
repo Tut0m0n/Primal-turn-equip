@@ -1,8 +1,3 @@
-@font-face {
-  font-family: "KorolevCompressed";
-  src: local("Korolev Compressed Demi Bold");
-}
-
 /* RESET */
 * {
   margin: 0;
@@ -13,12 +8,11 @@
 /* BACKGROUND */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 50%, #0c0c0c 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 60%, #0a0a0a 100%);
   color: #111;
   min-height: 100vh;
 }
 
-/* APP */
 .app {
   width: 100%;
   min-height: 100vh;
@@ -35,7 +29,7 @@ body {
   display: block;
 }
 
-/* FADE */
+/* ANIMATIONS */
 .fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -50,24 +44,26 @@ body {
 }
 
 @keyframes fadeSlide {
-  from { opacity: 0; transform: translateY(15px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* MUSIC CONTROL */
+/* MUSIC CONTROL (50% SMALLER) */
 .music-control {
   position: fixed;
-  top: 15px;
-  right: 15px;
+  top: 10px;
+  right: 10px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   z-index: 9999;
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid #ccc;
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+  padding: 4px 6px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 8px rgba(0,0,0,0.12);
+  transform: scale(0.5);
+  transform-origin: top right;
 }
 
 .music-control button {
@@ -78,7 +74,7 @@ body {
 }
 
 .music-control input[type="range"] {
-  width: 100px;
+  width: 90px;
 }
 
 /* HOME SCREEN */
@@ -86,59 +82,100 @@ body {
   max-width: 650px;
   margin: 0 auto;
   text-align: center;
-  padding-top: 50px;
+  padding-top: 60px;
 }
 
+.main-logo-home {
+  width: 520px;
+  max-width: 95%;
+  margin: 0 auto 30px auto;
+  display: block;
+}
+
+/* LOGO NORMAL */
 .main-logo {
-  width: 420px;
+  width: 360px;
   max-width: 90%;
-  margin-bottom: 35px;
+  margin-bottom: 20px;
+}
+
+/* ENTER BUTTON */
+.btn-enter {
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 26px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  margin: 0 auto;
+  display: block;
+}
+
+.btn-enter:hover {
+  background: #000;
 }
 
 /* TITLES */
 .question-title {
-  font-size: 22px;
-  margin-bottom: 25px;
+  font-size: 18px;
+  margin-bottom: 20px;
   font-weight: 600;
 }
 
-/* OPTIONS */
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 14px;
-  margin-bottom: 25px;
+/* OPTION LIST (checkbox style) */
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 360px;
+  margin: 0 auto 20px auto;
+  text-align: left;
 }
 
-.monster-grid {
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-}
-
-.option-box {
+.option-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border: 2px solid #111;
-  padding: 12px;
-  font-size: 18px;
-  cursor: pointer;
+  padding: 10px 12px;
   border-radius: 10px;
   background: white;
+  cursor: pointer;
   transition: 0.2s;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.option-box:hover {
-  background: #f5f5f5;
+.option-row:hover {
+  background: #f2f2f2;
 }
 
-.option-box.selected {
+.checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #111;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.option-row.selected {
   background: #111;
   color: white;
+}
+
+.option-row.selected .checkbox {
+  background: #c40000;
+  border-color: white;
 }
 
 /* NAV BUTTONS */
 .nav-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 /* BUTTONS */
@@ -146,10 +183,15 @@ button {
   cursor: pointer;
   border: none;
   border-radius: 10px;
-  padding: 10px 18px;
-  font-size: 15px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 600;
   transition: 0.2s;
+}
+
+.small-btn {
+  transform: scale(0.75);
+  transform-origin: center;
 }
 
 .btn-primary {
@@ -179,9 +221,13 @@ button {
   background: #8b0000;
 }
 
-.big {
-  font-size: 20px;
-  padding: 14px 40px;
+.btn-cancel {
+  background: #c40000;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: #8b0000;
 }
 
 /* TRACKER HEADER */
@@ -189,19 +235,19 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 20px;
+  padding: 14px 18px;
   border-bottom: 2px solid rgba(0,0,0,0.2);
 }
 
 .header-logo {
-  height: 70px;
+  height: 55px;
 }
 
 .player-turn-counter {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 8px 14px;
+  padding: 6px 10px;
   border-radius: 12px;
   border: 2px solid rgba(0,0,0,0.25);
   background: rgba(255,255,255,0.8);
@@ -211,6 +257,8 @@ button {
   background: white;
   border: 2px solid #111;
   font-weight: 700;
+  font-size: 13px;
+  padding: 6px 10px;
 }
 
 .glossary-btn:hover {
@@ -221,56 +269,56 @@ button {
 /* MAIN LAYOUT */
 .layout {
   display: grid;
-  grid-template-columns: 280px 1fr 320px;
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: 260px 1fr 300px;
+  gap: 16px;
+  padding: 16px;
 }
 
 /* LEFT PANEL */
 .left-panel {
   border: 2px solid rgba(0,0,0,0.2);
   border-radius: 14px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255,255,255,0.75);
 }
 
 .round-counter-box {
   border: 2px solid rgba(0,0,0,0.25);
   border-radius: 14px;
-  padding: 14px;
+  padding: 10px;
   text-align: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .round-title {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .round-value {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
-  margin-top: 6px;
+  margin-top: 5px;
 }
 
 .left-title {
-  font-size: 20px;
+  font-size: 16px;
   text-align: center;
-  margin-bottom: 14px;
-  font-weight: 700;
+  margin-bottom: 12px;
+  font-weight: 800;
 }
 
 .phase-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .phase-item {
   border: 2px solid black;
-  padding: 10px;
+  padding: 8px;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   background: white;
   transition: 0.2s;
@@ -285,41 +333,30 @@ button {
 .center-panel {
   border: 2px solid rgba(0,0,0,0.2);
   border-radius: 14px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255,255,255,0.75);
   text-align: center;
-}
-
-.center-logo {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.mid-logo {
-  width: 250px;
-  max-width: 90%;
 }
 
 .phase-box {
   border: 2px solid rgba(0,0,0,0.25);
   border-radius: 14px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255,255,255,0.9);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .phase-title {
-  font-size: 28px;
-  margin-bottom: 12px;
-  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: 800;
   text-transform: uppercase;
 }
 
 .phase-content {
   text-align: left;
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   white-space: pre-line;
 }
 
@@ -327,7 +364,7 @@ button {
 .controls {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
@@ -335,47 +372,47 @@ button {
 .right-panel {
   border: 2px solid rgba(0,0,0,0.2);
   border-radius: 14px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255,255,255,0.75);
 }
 
 .counter-card {
   border: 2px solid rgba(0,0,0,0.25);
   border-radius: 14px;
-  padding: 14px;
-  margin-bottom: 16px;
+  padding: 12px;
+  margin-bottom: 14px;
   background: rgba(255,255,255,0.9);
   text-align: center;
 }
 
 .counter-title {
-  font-size: 16px;
-  margin-bottom: 10px;
-  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 800;
 }
 
 .counter-display {
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .counter-controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  font-size: 22px;
-  font-weight: 700;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .mini-btn {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   border: 2px solid #111;
   background: white;
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .mini-btn:hover {
@@ -386,16 +423,16 @@ button {
 /* WARNING */
 .warning-text {
   margin-top: 10px;
-  font-weight: 700;
+  font-weight: 800;
   color: #c40000;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 /* FOOTER */
 .footer {
   text-align: center;
-  padding: 15px;
-  font-size: 13px;
+  padding: 12px;
+  font-size: 12px;
   opacity: 0.8;
 }
 
@@ -419,7 +456,7 @@ button {
 
 .modal-box {
   background: white;
-  padding: 25px;
+  padding: 20px;
   border-radius: 16px;
   width: 420px;
   max-width: 90%;
@@ -428,14 +465,14 @@ button {
 }
 
 .modal-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   margin-bottom: 12px;
 }
 
 .modal-text {
-  font-size: 15px;
-  margin-bottom: 18px;
+  font-size: 13px;
+  margin-bottom: 16px;
 }
 
 .modal-buttons {
@@ -451,6 +488,6 @@ button {
   }
 
   .header-logo {
-    height: 55px;
+    height: 45px;
   }
 }
