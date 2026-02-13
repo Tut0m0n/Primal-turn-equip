@@ -82,15 +82,12 @@ let currentPlayerTurn = 1;
 function formatText(content) {
   let formatted = content;
 
-  // Recordatorios en rojo
   formatted = formatted.replace(/Recordatorio:(.*)/gi, `<span class="reminder">Recordatorio:$1</span>`);
 
-  // Mayúsculas en negrita
   formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ0-9]{2,}\b/g, (match) => {
     return `<strong>${match}</strong>`;
   });
 
-  // Saltos de línea a HTML
   formatted = formatted.replace(/\n/g, "<br>");
 
   return formatted;
