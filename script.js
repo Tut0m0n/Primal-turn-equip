@@ -86,7 +86,7 @@ function formatText(content) {
   formatted = formatted.replace(/Recordatorio:(.*)/gi, `<span class="reminder">Recordatorio:$1</span>`);
 
   // Mayúsculas en negrita
-  formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ]{2,}\b/g, (match) => {
+  formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ0-9]{2,}\b/g, (match) => {
     return `<strong>${match}</strong>`;
   });
 
@@ -243,21 +243,18 @@ Si hay HIELO (terreno) en tu sector y tienes el estado AMENAZADO, debes de EXILI
 };
 
 // ======================================
-// TURN ORDER FLOW (NO DUPLICATE LIST)
+// FLOW BASE
 // ======================================
 
 const flow = [
   "1. Inicio de la ronda",
   "2. Consumir",
   "3. Mantenimiento del monstruo",
-
-  // estas fases se repiten en ejecución
   "4. Turno del jugador",
   "5. Fase de movimiento",
   "6. Fase de acción",
   "7. Fase de Desgaste",
   "8. Fin del turno del jugador",
-
   "9. Fin de la ronda"
 ];
 
@@ -330,7 +327,7 @@ volumeSlider.addEventListener("input", () => {
 });
 
 // ======================================
-// OPTION SELECTORS (checkbox style)
+// OPTION SELECTORS
 // ======================================
 
 function setupOptionSelection(container, callback) {
@@ -503,9 +500,6 @@ resetNoBtn.addEventListener("click", () => {
 // ======================================
 
 function updateCurrentPlayerFromPhaseIndex() {
-  // después de las primeras 3 fases, cada bloque de 5 fases corresponde a 1 jugador
-  // runtimeFlow: [1,2,3, (4-8)xN, 9]
-
   if (currentPhaseIndex <= 2) {
     currentPlayerTurn = 1;
     return;
@@ -576,7 +570,7 @@ nextPlayersBtn.addEventListener("click", () => {
   }
 
   if (selectedPlayers === "SOLO") {
-    totalPlayers = 2;
+    totalPlayers = 1;
   } else {
     totalPlayers = parseInt(selectedPlayers);
   }
