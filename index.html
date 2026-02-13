@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- AUDIO (siempre activo) -->
+  <!-- AUDIO -->
   <audio id="bgMusic" loop>
     <source src="assets/audio/intro.mp3" type="audio/mpeg">
     Tu navegador no soporta audio.
@@ -21,10 +21,9 @@
     <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5">
   </div>
 
-  <!-- APP -->
   <div class="app">
 
-    <!-- PANTALLA 1: HOME -->
+    <!-- PANTALLA 1 -->
     <section id="screen-home" class="screen active">
       <div class="center-box fade-in">
         <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo-home">
@@ -32,33 +31,37 @@
       </div>
     </section>
 
-    <!-- PANTALLA 2: JUGADORES -->
+    <!-- PANTALLA 2 -->
     <section id="screen-players" class="screen">
       <div class="center-box fade-in">
         <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
 
-        <h2 class="question-title">Selecciona número de jugadores:</h2>
+        <div class="selection-layout">
+          <div class="selection-left">
+            <h2 class="question-title">Selecciona número de jugadores:</h2>
+          </div>
 
-        <div class="option-list" id="playersOptions">
-          <div class="option-row" data-value="SOLO">
-            <span>SOLO</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="2">
-            <span>2</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="3">
-            <span>3</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="4">
-            <span>4</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="5">
-            <span>5</span>
-            <div class="checkbox"></div>
+          <div class="selection-right" id="playersOptions">
+            <div class="option-row" data-value="SOLO">
+              <span>SOLO</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="2">
+              <span>2</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="3">
+              <span>3</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="4">
+              <span>4</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="5">
+              <span>5</span>
+              <div class="checkbox"></div>
+            </div>
           </div>
         </div>
 
@@ -69,41 +72,45 @@
       </div>
     </section>
 
-    <!-- PANTALLA 3: MONSTRUO -->
+    <!-- PANTALLA 3 -->
     <section id="screen-monster" class="screen">
       <div class="center-box fade-in">
         <img src="assets/images/LOGO.png" alt="Primal Logo" class="main-logo">
 
-        <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
+        <div class="selection-layout">
+          <div class="selection-left">
+            <h2 class="question-title">Selecciona al monstruo que te enfrentarás:</h2>
+          </div>
 
-        <div class="option-list" id="monsterOptions">
-          <div class="option-row" data-value="Vyraxen">
-            <span>VYRAXEN</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Korowon">
-            <span>KOROWON</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Ozew">
-            <span>OZEW</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Hydar">
-            <span>HYDAR</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Pazis">
-            <span>PAZIS</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Taraska">
-            <span>TARASKA</span>
-            <div class="checkbox"></div>
-          </div>
-          <div class="option-row" data-value="Toramat">
-            <span>TORAMAT</span>
-            <div class="checkbox"></div>
+          <div class="selection-right" id="monsterOptions">
+            <div class="option-row" data-value="Vyraxen">
+              <span>VYRAXEN</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Korowon">
+              <span>KOROWON</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Ozew">
+              <span>OZEW</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Hydar">
+              <span>HYDAR</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Pazis">
+              <span>PAZIS</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Taraska">
+              <span>TARASKA</span>
+              <div class="checkbox"></div>
+            </div>
+            <div class="option-row" data-value="Toramat">
+              <span>TORAMAT</span>
+              <div class="checkbox"></div>
+            </div>
           </div>
         </div>
 
@@ -114,25 +121,19 @@
       </div>
     </section>
 
-    <!-- PANTALLA 4: TRACKER -->
+    <!-- PANTALLA 4 -->
     <section id="screen-tracker" class="screen">
 
       <header class="top-header">
-
         <div class="header-left"></div>
 
         <div class="header-center">
           <img src="assets/images/LOGO.png" alt="Primal Logo" class="header-logo-centered">
-
-          <div id="playerTurnCounter" class="player-turn-counter">
-            Turno Jugador 1 / 2
-          </div>
         </div>
 
         <div class="header-right">
           <button id="glossaryBtn" class="glossary-btn">GLOSARIO</button>
         </div>
-
       </header>
 
       <main class="layout">
@@ -144,6 +145,11 @@
             <div class="round-value">
               <span id="roundNumber">1</span> / 10
             </div>
+          </div>
+
+          <!-- CONTADOR TURNO JUGADOR (MOVIDO AQUÍ) -->
+          <div id="playerTurnCounter" class="player-turn-counter-left">
+            Turno Jugador 1 / 2
           </div>
 
           <h2 class="left-title">ORDEN DE TURNO</h2>
