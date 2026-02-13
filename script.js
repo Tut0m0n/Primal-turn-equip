@@ -1,116 +1,142 @@
 // ======================================
-// PRIMAL - Orden de Turno Companion
+// PRIMAL - Companion (FIXED VERSION)
+// Compatible con tu HTML actual
 // ======================================
 
 // SCREENS
-const screenHome = document.getElementById("screen-home");
-const screenPlayers = document.getElementById("screen-players");
-const screenMonster = document.getElementById("screen-monster");
-const screenTracker = document.getElementById("screen-tracker");
+const screen1 = document.getElementById("screen1");
+const screen2 = document.getElementById("screen2");
+const screen3 = document.getElementById("screen3");
+const screenLevel = document.getElementById("screenLevel");
+const screen4 = document.getElementById("screen4");
 
 // BUTTONS
-const enterBtn = document.getElementById("enterBtn");
+const btnEnter = document.getElementById("btnEnter");
 
-const cancelPlayersBtn = document.getElementById("cancelPlayersBtn");
-const nextPlayersBtn = document.getElementById("nextPlayersBtn");
+const btnBackTo1 = document.getElementById("btnBackTo1");
+const btnPlayersNext = document.getElementById("btnPlayersNext");
 
-const cancelMonsterBtn = document.getElementById("cancelMonsterBtn");
-const nextMonsterBtn = document.getElementById("nextMonsterBtn");
+const btnBackTo2 = document.getElementById("btnBackTo2");
+const btnMonsterNext = document.getElementById("btnMonsterNext");
 
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const resetBtn = document.getElementById("resetBtn");
+const btnBackTo3 = document.getElementById("btnBackTo3");
+const btnLevelNext = document.getElementById("btnLevelNext");
 
-// MUSIC
+const btnPrevPhase = document.getElementById("btnPrevPhase");
+const btnNextPhase = document.getElementById("btnNextPhase");
+const btnReset = document.getElementById("btnReset");
+
+// AUDIO
 const bgMusic = document.getElementById("bgMusic");
 const musicToggleBtn = document.getElementById("musicToggleBtn");
-const volumeSlider = document.getElementById("volumeSlider");
+const volumeControl = document.getElementById("volumeControl");
+
+// SELECTIONS
+const playersSelection = document.getElementById("playersSelection");
+const monsterSelection = document.getElementById("monsterSelection");
+const levelSelection = document.getElementById("levelSelection");
 
 // TRACKER ELEMENTS
-const phaseList = document.getElementById("phaseList");
-const currentPhaseTitle = document.getElementById("currentPhaseTitle");
-const currentPhaseContent = document.getElementById("currentPhaseContent");
-const roundNumber = document.getElementById("roundNumber");
-const phaseBox = document.getElementById("phaseBox");
+const roundCounter = document.getElementById("roundCounter");
 const playerTurnCounter = document.getElementById("playerTurnCounter");
+const turnList = document.getElementById("turnList");
 
-// MODAL RESET
-const resetModal = document.getElementById("resetModal");
-const resetYesBtn = document.getElementById("resetYesBtn");
-const resetNoBtn = document.getElementById("resetNoBtn");
+const phaseTitle = document.getElementById("phaseTitle");
+const phaseText = document.getElementById("phaseText");
 
-// COUNTERS
-const woundsValue = document.getElementById("woundsValue");
-const damageValue = document.getElementById("damageValue");
-const effortValue = document.getElementById("effortValue");
-const accelValue = document.getElementById("accelValue");
+const woundsCounter = document.getElementById("woundsCounter");
+const damageCounter = document.getElementById("damageCounter");
+const effortCounter = document.getElementById("effortCounter");
+const accelCounter = document.getElementById("accelCounter");
 
-const damageMinus = document.getElementById("damageMinus");
-const damagePlus = document.getElementById("damagePlus");
+const damageMaxSpan = document.getElementById("damageMax");
 
-const effortMinus = document.getElementById("effortMinus");
-const effortPlus = document.getElementById("effortPlus");
+const btnDmgMinus = document.getElementById("btnDmgMinus");
+const btnDmgPlus = document.getElementById("btnDmgPlus");
 
-const accelMinus = document.getElementById("accelMinus");
-const accelPlus = document.getElementById("accelPlus");
+const btnEffMinus = document.getElementById("btnEffMinus");
+const btnEffPlus = document.getElementById("btnEffPlus");
 
-const effortWarning = document.getElementById("effortWarning");
-
-// PLAYER / MONSTER OPTIONS
-const playersOptions = document.getElementById("playersOptions");
-const monsterOptions = document.getElementById("monsterOptions");
+const btnAccMinus = document.getElementById("btnAccMinus");
+const btnAccPlus = document.getElementById("btnAccPlus");
 
 // APP STATE
 let selectedPlayers = null;
 let selectedMonster = null;
+let selectedMonsterLevel = null;
 
-let currentPhaseIndex = 0;
+let totalPlayers = 2;
+let currentPlayer = 1;
+
 let currentRound = 1;
+let currentPhaseIndex = 0;
 
 let wounds = 0;
 let damage = 0;
 let effort = 0;
 let accel = 0;
 
-let totalPlayers = 2;
-let currentPlayerTurn = 1;
+let damageMax = 10;
+
+let musicPlaying = false;
 
 // ======================================
-// TEXT FORMATTING
+// SCREEN CONTROL
+// ======================================
+
+function showScreen(screenToShow) {
+  [screen1, screen2, screen3, screenLevel, screen4].forEach(s => {
+    s.classList.remove("active");
+  });
+
+  screenToShow.classList.add("active");
+}
+
+// ======================================
+// MUSIC CONTROL
+// ======================================
+
+function startMusic() {
+  bgMusic.volume = parseFloat(volumeControl.value);
+  bgMusic.play().then(() => {
+    musicPlaying = true;
+    musicToggleBtn.textContent = "🔊";
+  }).catch(() => {
+    musicPlaying = false;
+    musicToggleBtn.textContent = "🔇";
+  });
+}
+
+musicToggleBtn.addEventListener("click", () => {
+  if (!musicPlaying) {
+    startMusic();
+  } else {
+    bgMusic.pause();
+    musicPlaying = false;
+    musicToggleBtn.textContent = "🔇";
+  }
+});
+
+volumeControl.addEventListener("input", () => {
+  bgMusic.volume = parseFloat(volumeControl.value);
+});
+
+// ======================================
+// FORMAT TEXT
 // ======================================
 
 function formatText(content) {
   let formatted = content;
 
   formatted = formatted.replace(/Recordatorio:(.*)/gi, `<span class="reminder">Recordatorio:$1</span>`);
-
-  formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ0-9]{2,}\b/g, (match) => {
-    return `<strong>${match}</strong>`;
-  });
-
+  formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ0-9]{2,}\b/g, (match) => `<strong>${match}</strong>`);
   formatted = formatted.replace(/\n/g, "<br>");
 
   return formatted;
 }
 
 // ======================================
-// PHASES DATA (ESTATICO IZQUIERDA)
-// ======================================
-
-const staticPhaseTitles = [
-  "1. Inicio de la ronda",
-  "2. Consumir",
-  "3. Mantenimiento del monstruo",
-  "4. Turno del jugador",
-  "5. Fase de movimiento",
-  "6. Fase de acción",
-  "7. Fase de Desgaste",
-  "8. Fin del turno del jugador",
-  "9. Fin de la ronda"
-];
-
-// ======================================
-// DATA - PHASES CONTENT
+// PHASES DATA
 // ======================================
 
 const phasesContent = {
@@ -243,7 +269,7 @@ Si hay HIELO (terreno) en tu sector y tienes el estado AMENAZADO, debes de EXILI
 // FLOW BASE
 // ======================================
 
-const flow = [
+const baseFlow = [
   "1. Inicio de la ronda",
   "2. Consumir",
   "3. Mantenimiento del monstruo",
@@ -255,19 +281,18 @@ const flow = [
   "9. Fin de la ronda"
 ];
 
-// flow real dinámico según jugadores
 let runtimeFlow = [];
 
 // ======================================
-// BUILD RUNTIME FLOW
+// BUILD FLOW BY PLAYERS
 // ======================================
 
 function buildRuntimeFlow(playersCount) {
   runtimeFlow = [];
 
-  runtimeFlow.push(flow[0]);
-  runtimeFlow.push(flow[1]);
-  runtimeFlow.push(flow[2]);
+  runtimeFlow.push(baseFlow[0]);
+  runtimeFlow.push(baseFlow[1]);
+  runtimeFlow.push(baseFlow[2]);
 
   for (let i = 1; i <= playersCount; i++) {
     runtimeFlow.push("4. Turno del jugador");
@@ -277,248 +302,189 @@ function buildRuntimeFlow(playersCount) {
     runtimeFlow.push("8. Fin del turno del jugador");
   }
 
-  runtimeFlow.push("9. Fin de la ronda");
+  runtimeFlow.push(baseFlow[8]);
 }
 
 // ======================================
-// SCREEN HANDLING
+// UPDATE UI
 // ======================================
 
-function showScreen(screen) {
-  [screenHome, screenPlayers, screenMonster, screenTracker].forEach(s => {
-    s.classList.remove("active");
-  });
-
-  screen.classList.add("active");
+function updateRoundUI() {
+  roundCounter.textContent = `${currentRound} / 10`;
 }
 
-// ======================================
-// MUSIC HANDLING
-// ======================================
-
-let musicPlaying = false;
-
-function startMusic() {
-  bgMusic.volume = 0.5;
-  bgMusic.play().then(() => {
-    musicPlaying = true;
-    musicToggleBtn.textContent = "🔊";
-  }).catch(() => {
-    musicPlaying = false;
-    musicToggleBtn.textContent = "🔇";
-  });
+function updatePlayerUI() {
+  playerTurnCounter.textContent = `${currentPlayer} / ${totalPlayers}`;
 }
 
-musicToggleBtn.addEventListener("click", () => {
-  if (!musicPlaying) {
-    startMusic();
-  } else {
-    bgMusic.pause();
-    musicPlaying = false;
-    musicToggleBtn.textContent = "🔇";
-  }
-});
+function updateTurnListUI() {
+  turnList.innerHTML = "";
 
-volumeSlider.addEventListener("input", () => {
-  bgMusic.volume = volumeSlider.value;
-});
-
-// ======================================
-// OPTION SELECTORS
-// ======================================
-
-function setupOptionSelection(container, callback) {
-  const items = container.querySelectorAll(".option-row");
-
-  items.forEach(item => {
-    item.addEventListener("click", () => {
-      items.forEach(i => i.classList.remove("selected"));
-      item.classList.add("selected");
-      callback(item.dataset.value);
-    });
-  });
-}
-
-setupOptionSelection(playersOptions, (val) => {
-  selectedPlayers = val;
-});
-
-setupOptionSelection(monsterOptions, (val) => {
-  selectedMonster = val;
-});
-
-// ======================================
-// TRACKER UI
-// ======================================
-
-function renderStaticPhaseList(activeTitle) {
-  phaseList.innerHTML = "";
-
-  staticPhaseTitles.forEach((title) => {
+  baseFlow.forEach((phase) => {
     const div = document.createElement("div");
-    div.classList.add("phase-item");
-    div.textContent = title;
+    div.classList.add("turn-item");
+    div.textContent = phase;
 
-    if (title === activeTitle) {
+    if (phase === runtimeFlow[currentPhaseIndex]) {
       div.classList.add("active");
     }
 
-    phaseList.appendChild(div);
+    turnList.appendChild(div);
   });
 }
 
-function updatePlayerTurnCounter() {
-  playerTurnCounter.textContent = `Turno Jugador ${currentPlayerTurn} / ${totalPlayers}`;
+function updatePhaseUI() {
+  const phaseName = runtimeFlow[currentPhaseIndex];
+
+  phaseTitle.textContent = phaseName.toUpperCase();
+  phaseText.innerHTML = formatText(phasesContent[phaseName]);
+
+  updateTurnListUI();
 }
 
-function updatePhaseDisplay() {
-  const phaseTitle = runtimeFlow[currentPhaseIndex];
-  const content = phasesContent[phaseTitle];
+function updateCountersUI() {
+  woundsCounter.textContent = wounds;
+  damageCounter.textContent = damage;
+  effortCounter.textContent = effort;
+  accelCounter.textContent = accel;
 
-  currentPhaseTitle.textContent = phaseTitle;
-  currentPhaseContent.innerHTML = formatText(content);
-
-  renderStaticPhaseList(phaseTitle);
-
-  phaseBox.classList.remove("fade-slide");
-  void phaseBox.offsetWidth;
-  phaseBox.classList.add("fade-slide");
+  damageMaxSpan.textContent = damageMax;
 }
 
 // ======================================
-// ROUND LOGIC
+// PLAYER CALCULATION
 // ======================================
 
-function updateRoundDisplay() {
-  roundNumber.textContent = currentRound;
+function updateCurrentPlayerFromPhase() {
+  if (currentPhaseIndex <= 2) {
+    currentPlayer = 1;
+    return;
+  }
+
+  const relativeIndex = currentPhaseIndex - 3;
+  const blockSize = 5;
+
+  if (relativeIndex >= 0) {
+    currentPlayer = Math.floor(relativeIndex / blockSize) + 1;
+    if (currentPlayer > totalPlayers) currentPlayer = totalPlayers;
+  }
 }
+
+// ======================================
+// RESET TRACKER
+// ======================================
 
 function resetTracker() {
-  currentPhaseIndex = 0;
   currentRound = 1;
-  currentPlayerTurn = 1;
-
-  updateRoundDisplay();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
-}
-
-// ======================================
-// COUNTERS LOGIC
-// ======================================
-
-function updateCounters() {
-  woundsValue.textContent = wounds;
-  damageValue.textContent = damage;
-  effortValue.textContent = effort;
-  accelValue.textContent = accel;
-
-  if (effort >= 10) {
-    effortWarning.textContent = "DESATADO!! Genera el daño del monstruo a todos los jugadores!!";
-  } else {
-    effortWarning.textContent = "";
-  }
-}
-
-damagePlus.addEventListener("click", () => {
-  damage++;
-  if (damage >= 10) {
-    damage = 0;
-    wounds++;
-    if (wounds > 10) wounds = 10;
-  }
-  updateCounters();
-});
-
-damageMinus.addEventListener("click", () => {
-  damage--;
-  if (damage < 0) damage = 0;
-  updateCounters();
-});
-
-effortPlus.addEventListener("click", () => {
-  effort++;
-  if (effort > 10) effort = 10;
-  updateCounters();
-});
-
-effortMinus.addEventListener("click", () => {
-  effort--;
-  if (effort < 0) effort = 0;
-  updateCounters();
-});
-
-accelPlus.addEventListener("click", () => {
-  accel++;
-  if (accel > 10) accel = 10;
-  updateCounters();
-});
-
-accelMinus.addEventListener("click", () => {
-  accel--;
-  if (accel < 0) accel = 0;
-  updateCounters();
-});
-
-// ======================================
-// RESET MODAL
-// ======================================
-
-function openResetModal() {
-  resetModal.classList.add("active");
-}
-
-function closeResetModal() {
-  resetModal.classList.remove("active");
-}
-
-resetBtn.addEventListener("click", () => {
-  openResetModal();
-});
-
-resetYesBtn.addEventListener("click", () => {
-  closeResetModal();
+  currentPhaseIndex = 0;
+  currentPlayer = 1;
 
   wounds = 0;
   damage = 0;
   effort = 0;
   accel = 0;
 
-  updateCounters();
-  resetTracker();
-});
-
-resetNoBtn.addEventListener("click", () => {
-  closeResetModal();
-});
+  updateRoundUI();
+  updatePlayerUI();
+  updatePhaseUI();
+  updateCountersUI();
+}
 
 // ======================================
-// NAVIGATION BUTTON EVENTS
+// DAMAGE MAX (por nivel monstruo)
 // ======================================
 
-function updateCurrentPlayerFromPhaseIndex() {
-  if (currentPhaseIndex <= 2) {
-    currentPlayerTurn = 1;
+function updateDamageMax() {
+  if (selectedMonsterLevel === null) {
+    damageMax = 10;
+  } else {
+    const lvl = parseInt(selectedMonsterLevel);
+
+    // puedes ajustar estos valores a tu gusto
+    if (lvl === 0) damageMax = 10;
+    if (lvl === 1) damageMax = 12;
+    if (lvl === 2) damageMax = 14;
+    if (lvl === 3) damageMax = 16;
+  }
+
+  updateCountersUI();
+}
+
+// ======================================
+// RADIO SELECTION HANDLING
+// ======================================
+
+function getSelectedRadioValue(name) {
+  const selected = document.querySelector(`input[name="${name}"]:checked`);
+  return selected ? selected.value : null;
+}
+
+// ======================================
+// BUTTON EVENTS - FLOW SCREENS
+// ======================================
+
+btnEnter.addEventListener("click", () => {
+  startMusic();
+  showScreen(screen2);
+});
+
+btnBackTo1.addEventListener("click", () => {
+  showScreen(screen1);
+});
+
+btnPlayersNext.addEventListener("click", () => {
+  selectedPlayers = getSelectedRadioValue("players");
+
+  if (!selectedPlayers) {
+    alert("Debes seleccionar número de jugadores.");
     return;
   }
 
-  const playerBlockStart = 3;
-  const playerBlockEnd = runtimeFlow.length - 2;
+  totalPlayers = parseInt(selectedPlayers);
 
-  if (currentPhaseIndex >= playerBlockStart && currentPhaseIndex <= playerBlockEnd) {
-    const relative = currentPhaseIndex - playerBlockStart;
-    const blockSize = 5;
-    currentPlayerTurn = Math.floor(relative / blockSize) + 1;
+  showScreen(screen3);
+});
 
-    if (currentPlayerTurn > totalPlayers) currentPlayerTurn = totalPlayers;
+btnBackTo2.addEventListener("click", () => {
+  showScreen(screen2);
+});
+
+btnMonsterNext.addEventListener("click", () => {
+  selectedMonster = getSelectedRadioValue("monster");
+
+  if (!selectedMonster) {
+    alert("Debes seleccionar un monstruo.");
+    return;
   }
 
-  if (currentPhaseIndex === runtimeFlow.length - 1) {
-    currentPlayerTurn = totalPlayers;
-  }
-}
+  showScreen(screenLevel);
+});
 
-nextBtn.addEventListener("click", () => {
+btnBackTo3.addEventListener("click", () => {
+  showScreen(screen3);
+});
+
+btnLevelNext.addEventListener("click", () => {
+  selectedMonsterLevel = getSelectedRadioValue("monsterLevel");
+
+  if (selectedMonsterLevel === null) {
+    alert("Debes seleccionar un nivel.");
+    return;
+  }
+
+  buildRuntimeFlow(totalPlayers);
+  updateDamageMax();
+
+  showScreen(screen4);
+
+  resetTracker();
+});
+
+// ======================================
+// NAVIGATION PHASES
+// ======================================
+
+btnNextPhase.addEventListener("click", () => {
   currentPhaseIndex++;
 
   if (currentPhaseIndex >= runtimeFlow.length) {
@@ -528,74 +494,88 @@ nextBtn.addEventListener("click", () => {
     if (currentRound > 10) currentRound = 10;
   }
 
-  updateCurrentPlayerFromPhaseIndex();
-  updateRoundDisplay();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
+  updateCurrentPlayerFromPhase();
+  updateRoundUI();
+  updatePlayerUI();
+  updatePhaseUI();
 });
 
-prevBtn.addEventListener("click", () => {
+btnPrevPhase.addEventListener("click", () => {
   currentPhaseIndex--;
 
   if (currentPhaseIndex < 0) {
     currentPhaseIndex = 0;
   }
 
-  updateCurrentPlayerFromPhaseIndex();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
+  updateCurrentPlayerFromPhase();
+  updatePlayerUI();
+  updatePhaseUI();
 });
 
 // ======================================
-// HOME / PLAYERS / MONSTER BUTTON EVENTS
+// RESET BUTTON
 // ======================================
 
-enterBtn.addEventListener("click", () => {
-  startMusic();
-  showScreen(screenPlayers);
+btnReset.addEventListener("click", () => {
+  if (confirm("¿Seguro que quieres reiniciar todo?")) {
+    resetTracker();
+  }
 });
 
-cancelPlayersBtn.addEventListener("click", () => {
-  selectedPlayers = null;
-  showScreen(screenHome);
-});
+// ======================================
+// COUNTER BUTTONS
+// ======================================
 
-nextPlayersBtn.addEventListener("click", () => {
-  if (!selectedPlayers) {
-    alert("Debes seleccionar una opción de jugadores.");
-    return;
+btnDmgPlus.addEventListener("click", () => {
+  damage++;
+
+  if (damage >= damageMax) {
+    damage = 0;
+    wounds++;
+    if (wounds > 10) wounds = 10;
   }
 
-  if (selectedPlayers === "SOLO") {
-    totalPlayers = 1;
-  } else {
-    totalPlayers = parseInt(selectedPlayers);
-  }
-
-  showScreen(screenMonster);
+  updateCountersUI();
 });
 
-cancelMonsterBtn.addEventListener("click", () => {
-  selectedMonster = null;
-  showScreen(screenPlayers);
+btnDmgMinus.addEventListener("click", () => {
+  damage--;
+  if (damage < 0) damage = 0;
+
+  updateCountersUI();
 });
 
-nextMonsterBtn.addEventListener("click", () => {
-  if (!selectedMonster) {
-    alert("Debes seleccionar un monstruo.");
-    return;
-  }
+btnEffPlus.addEventListener("click", () => {
+  effort++;
+  if (effort > 10) effort = 10;
 
-  buildRuntimeFlow(totalPlayers);
-  showScreen(screenTracker);
+  updateCountersUI();
+});
 
-  resetTracker();
-  updateCounters();
+btnEffMinus.addEventListener("click", () => {
+  effort--;
+  if (effort < 0) effort = 0;
+
+  updateCountersUI();
+});
+
+btnAccPlus.addEventListener("click", () => {
+  accel++;
+  if (accel > 10) accel = 10;
+
+  updateCountersUI();
+});
+
+btnAccMinus.addEventListener("click", () => {
+  accel--;
+  if (accel < 0) accel = 0;
+
+  updateCountersUI();
 });
 
 // ======================================
 // INIT
 // ======================================
 
-showScreen(screenHome);
-updateCounters();
+showScreen(screen1);
+updateCountersUI();
