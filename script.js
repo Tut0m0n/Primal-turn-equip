@@ -576,6 +576,6 @@ btnAccMinus.addEventListener("click", () => {
 // ======================================
 // INIT
 // ======================================
-
+ 
 showScreen(screen1);
 updateCountersUI();
