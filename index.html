@@ -9,6 +9,18 @@
 
 <body>
 
+  <!-- AUDIO GLOBAL -->
+  <audio id="bgMusic" loop>
+    <source src="assets/audio/intro.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- AUDIO CONTROL GLOBAL (siempre visible) -->
+  <div class="audio-floating">
+    <button id="btnMute" class="audio-btn">🔊</button>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5"/>
+  </div>
+
+
   <!-- ======================
         PANTALLA 1: ENTRADA
   ======================= -->
@@ -142,19 +154,12 @@
 
     <!-- HEADER -->
     <header class="topbar">
-      <div class="topbar-left"></div>
-
       <div class="topbar-center">
         <img src="assets/images/LOGO.png" alt="PRIMAL Logo" class="main-logo"/>
       </div>
 
       <div class="topbar-right">
         <button id="btnGlossary" class="btn btn-glossary">GLOSARIO</button>
-
-        <div class="audio-box">
-          <button id="btnMute" class="audio-btn">🔊</button>
-          <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5"/>
-        </div>
       </div>
     </header>
 
@@ -249,12 +254,6 @@
     </div>
 
   </section>
-
-
-  <!-- AUDIO -->
-  <audio id="bgMusic" loop>
-    <source src="assets/audio/intro.mp3" type="audio/mpeg">
-  </audio>
 
   <script src="script.js"></script>
 </body>
