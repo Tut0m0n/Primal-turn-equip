@@ -48,7 +48,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* MUSIC CONTROL (50% SMALLER) */
+/* MUSIC CONTROL */
 .music-control {
   position: fixed;
   top: 10px;
@@ -79,7 +79,7 @@ body {
 
 /* HOME SCREEN */
 .center-box {
-  max-width: 650px;
+  max-width: 850px;
   margin: 0 auto;
   text-align: center;
   padding-top: 60px;
@@ -92,7 +92,6 @@ body {
   display: block;
 }
 
-/* LOGO NORMAL */
 .main-logo {
   width: 360px;
   max-width: 90%;
@@ -121,20 +120,32 @@ body {
 /* TITLES */
 .question-title {
   font-size: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-weight: 600;
-}
-
-/* OPTION LIST (checkbox style) */
-.option-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-width: 360px;
-  margin: 0 auto 20px auto;
   text-align: left;
 }
 
+/* NEW LAYOUT FOR SCREEN 2 & 3 */
+.selection-layout {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.selection-left {
+  padding-top: 8px;
+}
+
+.selection-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* OPTION ROWS */
 .option-row {
   display: flex;
   justify-content: space-between;
@@ -261,16 +272,6 @@ button {
   height: 55px;
 }
 
-.player-turn-counter {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  border-radius: 12px;
-  border: 2px solid rgba(0,0,0,0.25);
-  background: rgba(255,255,255,0.8);
-}
-
 .glossary-btn {
   background: white;
   border: 2px solid #111;
@@ -317,6 +318,19 @@ button {
   font-size: 18px;
   font-weight: 700;
   margin-top: 5px;
+}
+
+/* PLAYER TURN COUNTER MOVED */
+.player-turn-counter-left {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 14px;
+  border: 2px solid rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.85);
+  text-align: center;
+  margin-bottom: 14px;
 }
 
 .left-title {
@@ -506,7 +520,11 @@ button {
 }
 
 /* RESPONSIVE */
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
+  .selection-layout {
+    grid-template-columns: 1fr;
+  }
+
   .layout {
     grid-template-columns: 1fr;
   }
