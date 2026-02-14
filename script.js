@@ -1,95 +1,251 @@
-// ======================================
-// PRIMAL COMPANION - SCRIPT FUNCIONAL
-// ======================================
-
-// SCREENS
-const screen1 = document.getElementById("screen1");
-const screen2 = document.getElementById("screen2");
-const screen3 = document.getElementById("screen3");
-const screenLevel = document.getElementById("screenLevel");
-const screen4 = document.getElementById("screen4");
-
-// BUTTONS
-const btnEnter = document.getElementById("btnEnter");
-const btnBackTo1 = document.getElementById("btnBackTo1");
-const btnPlayersNext = document.getElementById("btnPlayersNext");
-
-const btnBackTo2 = document.getElementById("btnBackTo2");
-const btnMonsterNext = document.getElementById("btnMonsterNext");
-
-const btnBackTo3 = document.getElementById("btnBackTo3");
-const btnLevelNext = document.getElementById("btnLevelNext");
-
-// TRACKER BUTTONS
-const btnPrevPhase = document.getElementById("btnPrevPhase");
-const btnNextPhase = document.getElementById("btnNextPhase");
-const btnReset = document.getElementById("btnReset");
-
-// AUDIO
-const bgMusic = document.getElementById("bgMusic");
-const musicToggleBtn = document.getElementById("musicToggleBtn");
-const volumeControl = document.getElementById("volumeControl");
-
-// OVERLAY MESSAGE
-const overlayMessage = document.getElementById("overlayMessage");
-const overlayText = document.getElementById("overlayText");
-
-// UI ELEMENTS SCREEN4
-const roundCounter = document.getElementById("roundCounter");
-const playerTurnCounter = document.getElementById("playerTurnCounter");
-
-const phaseTitle = document.getElementById("phaseTitle");
-const phaseText = document.getElementById("phaseText");
-
-const woundsCounter = document.getElementById("woundsCounter");
-const damageCounter = document.getElementById("damageCounter");
-const damageMaxEl = document.getElementById("damageMax");
-
-const effortCounter = document.getElementById("effortCounter");
-const accelCounter = document.getElementById("accelCounter");
-
-const btnDmgMinus = document.getElementById("btnDmgMinus");
-const btnDmgPlus = document.getElementById("btnDmgPlus");
-
-const btnEffMinus = document.getElementById("btnEffMinus");
-const btnEffPlus = document.getElementById("btnEffPlus");
-
-const btnAccMinus = document.getElementById("btnAccMinus");
-const btnAccPlus = document.getElementById("btnAccPlus");
-
-// STATE
+// ===============================
+// GLOBAL STATE
+// ===============================
 let selectedPlayers = null;
 let selectedMonster = null;
 let selectedLevel = null;
 
-let totalPlayers = 2;
-let currentRound = 1;
-let currentPhaseIndex = 0;
-let currentPlayerTurn = 1;
-
+let round = 1;
+let posture = 1;
 let wounds = 0;
 let damage = 0;
-let effort = 0;
-let accel = 0;
 
-let damageMax = 0;
+const MAX_WOUNDS = 10;
 
-// ======================================
-// SHOW SCREEN
-// ======================================
+// Vyraxen multipliers per posture depending on level
+const VYRAXEN_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 4 },
+  1: { 1: 5, 2: 7, 3: 10 },
+  2: { 1: 10, 2: 15, 3: 20 },
+  3: { 1: 18, 2: 24, 3: 30 }
+};
 
-function showScreen(screen) {
-  [screen1, screen2, screen3, screenLevel, screen4].forEach(s => s.classList.remove("active"));
-  screen.classList.add("active");
+// ===============================
+// DOM ELEMENTS
+// ===============================
+const screens = {
+  screen1: document.getElementById("screen1"),
+  screen2: document.getElementById("screen2"),
+  screen3: document.getElementById("screen3"),
+  screenLevel: document.getElementById("screenLevel"),
+  screen4: document.getElementById("screen4"),
+};
+
+const btnEnter = document.getElementById("btnEnter");
+
+// Screen 2
+const btnBackTo1 = document.getElementById("btnBackTo1");
+const btnPlayersNext = document.getElementById("btnPlayersNext");
+
+// Screen 3
+const btnBackTo2 = document.getElementById("btnBackTo2");
+const btnMonsterNext = document.getElementById("btnMonsterNext");
+
+// Screen Level
+const btnBackTo3 = document.getElementById("btnBackTo3");
+const btnLevelNext = document.getElementById("btnLevelNext");
+
+// Screen 4 tracker
+const roundCounter = document.getElementById("roundCounter");
+const playerTurnCounter = document.getElementById("playerTurnCounter");
+const postureCounter = document.getElementById("postureCounter");
+
+const woundsCounter = document.getElementById("woundsCounter");
+const damageCounter = document.getElementById("damageCounter");
+const damageMax = document.getElementById("damageMax");
+
+const woundMessage = document.getElementById("woundMessage");
+const monsterMessage = document.getElementById("monsterMessage");
+
+// Controls
+const btnPostureDown = document.getElementById("btnPostureDown");
+const btnPostureUp = document.getElementById("btnPostureUp");
+
+const btnWoundDown = document.getElementById("btnWoundDown");
+const btnWoundUp = document.getElementById("btnWoundUp");
+
+const btnDmgMinus = document.getElementById("btnDmgMinus");
+const btnDmgPlus = document.getElementById("btnDmgPlus");
+
+const btnReset = document.getElementById("btnReset");
+
+// Phase center
+const phaseTitle = document.getElementById("phaseTitle");
+const phaseText = document.getElementById("phaseText");
+const btnPrevPhase = document.getElementById("btnPrevPhase");
+const btnNextPhase = document.getElementById("btnNextPhase");
+
+// Turn order list
+const turnList = document.getElementById("turnList");
+
+// Glossary modal
+const btnGlossary = document.getElementById("btnGlossary");
+const glossaryModal = document.getElementById("glossaryModal");
+const btnCloseGlossary = document.getElementById("btnCloseGlossary");
+
+// Extra buttons
+const btnPlants = document.getElementById("btnPlants");
+const btnSetup = document.getElementById("btnSetup");
+
+// Overlay
+const overlayPosture = document.getElementById("overlayPosture");
+
+// Music
+const bgMusic = document.getElementById("bgMusic");
+const volumeControl = document.getElementById("volumeControl");
+const musicToggleBtn = document.getElementById("musicToggleBtn");
+
+// ===============================
+// FUNCTIONS
+// ===============================
+function showScreen(screenId) {
+  Object.values(screens).forEach(screen => screen.classList.remove("active"));
+  screens[screenId].classList.add("active");
 }
 
-// ======================================
-// MUSIC CONTROL
-// ======================================
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
 
+// ===============================
+// DAMAGE SYSTEM
+// ===============================
+function getMaxDamage() {
+  if (!selectedPlayers || selectedLevel === null || !selectedMonster) return 0;
+
+  if (selectedMonster !== "Vyraxen") return 0;
+
+  const multiplier = VYRAXEN_DAMAGE_TABLE[selectedLevel][posture];
+  return multiplier * selectedPlayers;
+}
+
+// ===============================
+// PLAYER TURN SYSTEM
+// ===============================
+function getPlayerTurn() {
+  if (!selectedPlayers) return 1;
+  return ((currentPhaseIndex % selectedPlayers) + 1);
+}
+
+// ===============================
+// UI UPDATE
+// ===============================
+function updateTrackerUI() {
+  if (roundCounter) roundCounter.textContent = round;
+  if (postureCounter) postureCounter.textContent = posture;
+
+  if (playerTurnCounter) {
+    playerTurnCounter.textContent = getPlayerTurn();
+  }
+
+  if (woundsCounter) woundsCounter.textContent = wounds;
+
+  const maxDamage = getMaxDamage();
+  if (damageMax) damageMax.textContent = maxDamage;
+  if (damageCounter) damageCounter.textContent = damage;
+
+  updateWoundMessage();
+}
+
+// ===============================
+// WOUND MESSAGE + OVERLAY 15s
+// ===============================
+function showOverlayFor15Seconds(text) {
+  if (!overlayPosture) return;
+
+  overlayPosture.querySelector("p").textContent = text;
+
+  overlayPosture.classList.add("active");
+
+  setTimeout(() => {
+    overlayPosture.classList.remove("active");
+  }, 15000);
+}
+
+function updateWoundMessage() {
+  if (!woundMessage) return;
+
+  woundMessage.textContent = "";
+  woundMessage.style.color = "#c40000";
+
+  if (wounds === 3) {
+    woundMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense...";
+    showOverlayFor15Seconds("CAMBIO DE POSTURA en el monstruo, prepárense...");
+  }
+
+  if (wounds === 7) {
+    woundMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!";
+    showOverlayFor15Seconds("CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!");
+  }
+
+  if (wounds >= 10) {
+    woundMessage.textContent = "Felicidades han vencido a su presa, Cazadores. Ahora merecen un pequeño descanso...";
+    woundMessage.style.color = "#0b3dff";
+  }
+}
+
+// ===============================
+// PHASE SYSTEM
+// ===============================
+const phases = [
+  {
+    title: "INICIO DE RONDA",
+    content: "Comienza una nueva ronda.\n\n- Ajusta contadores.\n- Prepara al grupo."
+  },
+  {
+    title: "FASE DE CAZADORES",
+    content: "Los cazadores actúan.\n\n- Mover\n- Atacar\n- Usar habilidades"
+  },
+  {
+    title: "FASE DEL MONSTRUO",
+    content: "El monstruo realiza su acción.\n\n- Aplica IA\n- Ejecuta ataques"
+  },
+  {
+    title: "FINAL DE RONDA",
+    content: "Cierre de ronda.\n\n- Efectos finales\n- Preparar siguiente ronda"
+  }
+];
+
+let currentPhaseIndex = 0;
+
+function updatePhaseUI() {
+  if (phaseTitle) phaseTitle.textContent = phases[currentPhaseIndex].title;
+  if (phaseText) phaseText.textContent = phases[currentPhaseIndex].content;
+
+  document.querySelectorAll(".phase-item").forEach((el, index) => {
+    el.classList.toggle("active", index === currentPhaseIndex);
+  });
+
+  updateTrackerUI();
+}
+
+function buildTurnList() {
+  if (!turnList) return;
+
+  turnList.innerHTML = "";
+
+  phases.forEach((phase, index) => {
+    const item = document.createElement("div");
+    item.className = "phase-item";
+    item.textContent = phase.title;
+
+    item.addEventListener("click", () => {
+      currentPhaseIndex = index;
+      updatePhaseUI();
+    });
+
+    turnList.appendChild(item);
+  });
+}
+
+// ===============================
+// MUSIC SYSTEM
+// ===============================
 let musicPlaying = false;
 
 function startMusic() {
+  if (!bgMusic) return;
+
   bgMusic.volume = parseFloat(volumeControl.value);
 
   bgMusic.play().then(() => {
@@ -101,7 +257,9 @@ function startMusic() {
   });
 }
 
-musicToggleBtn.addEventListener("click", () => {
+function toggleMusic() {
+  if (!bgMusic) return;
+
   if (!musicPlaying) {
     startMusic();
   } else {
@@ -109,334 +267,204 @@ musicToggleBtn.addEventListener("click", () => {
     musicPlaying = false;
     musicToggleBtn.textContent = "🔇";
   }
+}
+
+// ===============================
+// PLAYER SELECTION
+// ===============================
+function initPlayerSelection() {
+  const radios = document.querySelectorAll("input[name='players']");
+  radios.forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      const val = e.target.value;
+
+      // SOLO significa 2 jugadores
+      if (val === "SOLO") {
+        selectedPlayers = 2;
+      } else {
+        selectedPlayers = parseInt(val);
+      }
+    });
+  });
+}
+
+// ===============================
+// MONSTER SELECTION
+// ===============================
+function initMonsterSelection() {
+  const radios = document.querySelectorAll("input[name='monster']");
+  radios.forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      selectedMonster = e.target.value;
+
+      // Solo Vyraxen implementado en tabla daño por ahora
+      if (selectedMonster !== "Vyraxen") {
+        monsterMessage.textContent = "⚠ Solo Vyraxen tiene daño dinámico implementado.";
+      } else {
+        monsterMessage.textContent = "";
+      }
+    });
+  });
+}
+
+// ===============================
+// LEVEL SELECTION
+// ===============================
+function initLevelSelection() {
+  const radios = document.querySelectorAll("input[name='monsterLevel']");
+  radios.forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      selectedLevel = parseInt(e.target.value);
+    });
+  });
+}
+
+// ===============================
+// EVENTS
+// ===============================
+btnEnter.addEventListener("click", () => {
+  showScreen("screen2");
+  startMusic();
 });
+
+btnBackTo1.addEventListener("click", () => {
+  showScreen("screen1");
+});
+
+btnPlayersNext.addEventListener("click", () => {
+  if (selectedPlayers === null) {
+    alert("Selecciona la cantidad de jugadores.");
+    return;
+  }
+  showScreen("screen3");
+});
+
+btnBackTo2.addEventListener("click", () => {
+  showScreen("screen2");
+});
+
+btnMonsterNext.addEventListener("click", () => {
+  if (!selectedMonster) {
+    alert("Selecciona un monstruo.");
+    return;
+  }
+  showScreen("screenLevel");
+});
+
+btnBackTo3.addEventListener("click", () => {
+  showScreen("screen3");
+});
+
+btnLevelNext.addEventListener("click", () => {
+  if (selectedLevel === null) {
+    alert("Selecciona el nivel del monstruo.");
+    return;
+  }
+
+  showScreen("screen4");
+
+  // Reset counters
+  round = 1;
+  posture = 1;
+  wounds = 0;
+  damage = 0;
+  currentPhaseIndex = 0;
+
+  buildTurnList();
+  updatePhaseUI();
+});
+
+// Posture
+btnPostureDown.addEventListener("click", () => {
+  posture = clamp(posture - 1, 1, 3);
+  damage = clamp(damage, 0, getMaxDamage());
+  updateTrackerUI();
+});
+
+btnPostureUp.addEventListener("click", () => {
+  posture = clamp(posture + 1, 1, 3);
+  damage = clamp(damage, 0, getMaxDamage());
+  updateTrackerUI();
+});
+
+// Wounds
+btnWoundDown.addEventListener("click", () => {
+  wounds = clamp(wounds - 1, 0, MAX_WOUNDS);
+  updateTrackerUI();
+});
+
+btnWoundUp.addEventListener("click", () => {
+  wounds = clamp(wounds + 1, 0, MAX_WOUNDS);
+  updateTrackerUI();
+});
+
+// Damage
+btnDmgMinus.addEventListener("click", () => {
+  damage = clamp(damage - 1, 0, getMaxDamage());
+  updateTrackerUI();
+});
+
+btnDmgPlus.addEventListener("click", () => {
+  damage = clamp(damage + 1, 0, getMaxDamage());
+  updateTrackerUI();
+});
+
+// Phases
+btnPrevPhase.addEventListener("click", () => {
+  currentPhaseIndex = clamp(currentPhaseIndex - 1, 0, phases.length - 1);
+  updatePhaseUI();
+});
+
+btnNextPhase.addEventListener("click", () => {
+  currentPhaseIndex = clamp(currentPhaseIndex + 1, 0, phases.length - 1);
+
+  // Cuando pasa la última fase, aumenta ronda
+  if (currentPhaseIndex === phases.length - 1) {
+    round++;
+  }
+
+  updatePhaseUI();
+});
+
+// Reset
+btnReset.addEventListener("click", () => {
+  round = 1;
+  posture = 1;
+  wounds = 0;
+  damage = 0;
+  currentPhaseIndex = 0;
+
+  updatePhaseUI();
+});
+
+// Glossary
+btnGlossary.addEventListener("click", () => {
+  glossaryModal.classList.add("active");
+});
+
+btnCloseGlossary.addEventListener("click", () => {
+  glossaryModal.classList.remove("active");
+});
+
+// Extra buttons
+btnPlants.addEventListener("click", () => {
+  alert("Aquí irá la sección Plantas y Terreno (pendiente).");
+});
+
+btnSetup.addEventListener("click", () => {
+  alert("Aquí irá la sección Setup Monstruo (pendiente).");
+});
+
+// Music controls
+musicToggleBtn.addEventListener("click", toggleMusic);
 
 volumeControl.addEventListener("input", () => {
   bgMusic.volume = parseFloat(volumeControl.value);
 });
 
-// ======================================
-// OVERLAY MESSAGE FUNCTION
-// ======================================
-
-function showOverlayMessage(message, duration = 15000) {
-  overlayText.textContent = message;
-  overlayMessage.classList.remove("hidden");
-
-  setTimeout(() => {
-    overlayMessage.classList.add("hidden");
-  }, duration);
-}
-
-// ======================================
-// SELECTION HANDLERS
-// ======================================
-
-function setupRadioSelection(name, callback) {
-  const radios = document.querySelectorAll(`input[name="${name}"]`);
-
-  radios.forEach(radio => {
-    radio.addEventListener("change", () => {
-      callback(radio.value);
-    });
-  });
-}
-
-setupRadioSelection("players", (val) => {
-  selectedPlayers = val;
-});
-
-setupRadioSelection("monster", (val) => {
-  selectedMonster = val;
-});
-
-setupRadioSelection("monsterLevel", (val) => {
-  selectedLevel = val;
-});
-
-// ======================================
-// PHASE DATA
-// ======================================
-
-const phases = [
-  { title: "1. INICIO DE LA RONDA", text: "Inicio de la ronda...\n(Remover Confusión)\n\nDetonar habilidades AL COMIENZO DE LA RONDA." },
-  { title: "2. CONSUMIR", text: "Cada jugador puede consumir una poción y removerla del juego." },
-  { title: "3. MANTENIMIENTO DEL MONSTRUO", text: "Refrescar comportamiento.\n+1 Esfuerzo por jugador.\n+1 Esfuerzo por aceleración." },
-  { title: "4. TURNO DEL JUGADOR", text: "El jugador con AGRESIVIDAD va primero.\nChequeos del jugador y efectos del monstruo." },
-  { title: "5. FASE DE MOVIMIENTO", text: "Moverse cuesta resistencia.\nSi no te mueves, obtienes AMENAZADO." },
-  { title: "6. FASE DE ACCIÓN", text: "Puedes jugar hasta 5 cartas.\nAcciones, asistencia, agresividad, etc." },
-  { title: "7. FASE DE DESGASTE", text: "Roba cartas de desgaste.\nSi no tienes suficientes defensas, sufres daño." },
-  { title: "8. FIN DEL TURNO DEL JUGADOR", text: "Descarta secuencia.\nRellena mano.\nChequeo de efectos." },
-  { title: "9. FIN DE LA RONDA", text: "Resolver habilidades AL FINAL DE LA RONDA.\nAvanzar marcador." }
-];
-
-// ======================================
-// UPDATE UI SCREEN4
-// ======================================
-
-function updateRoundUI() {
-  roundCounter.textContent = `${currentRound} / 10`;
-}
-
-function updatePlayerTurnUI() {
-  playerTurnCounter.textContent = `${currentPlayerTurn} / ${totalPlayers}`;
-}
-
-function updatePhaseUI() {
-  phaseTitle.textContent = phases[currentPhaseIndex].title;
-  phaseText.textContent = phases[currentPhaseIndex].text;
-}
-
-function updateCountersUI() {
-  woundsCounter.textContent = wounds;
-  damageCounter.textContent = damage;
-  effortCounter.textContent = effort;
-  accelCounter.textContent = accel;
-
-  damageMaxEl.textContent = damageMax;
-}
-
-// ======================================
-// DAMAGE MAX LOGIC (VYRAXEN)
-// ======================================
-
-function calculateDamageMax() {
-  if (!selectedMonster || !selectedLevel) return 0;
-
-  if (selectedMonster !== "VYRAXEN") {
-    return 10 * totalPlayers;
-  }
-
-  const lvl = parseInt(selectedLevel);
-
-  const table = {
-    0: [2, 3, 4],
-    1: [5, 7, 10],
-    2: [10, 15, 20],
-    3: [18, 24, 30]
-  };
-
-  const posture = getMonsterPosture();
-  const multiplier = table[lvl][posture - 1];
-
-  return multiplier * totalPlayers;
-}
-
-function getMonsterPosture() {
-  if (wounds < 3) return 1;
-  if (wounds < 7) return 2;
-  return 3;
-}
-
-// ======================================
-// POSTURE EVENTS / MESSAGES
-// ======================================
-
-function checkMonsterPostureMessages() {
-  if (selectedMonster !== "VYRAXEN") return;
-
-  if (wounds === 3) {
-    showOverlayMessage("CAMBIO DE POSTURA en el monstruo, prepárense...");
-  }
-
-  if (wounds === 7) {
-    showOverlayMessage("CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!");
-  }
-
-  if (wounds === 10) {
-    showOverlayMessage("Felicidades han vencido a su presa, Cazadores. Ahora merecen un pequeño descanso...");
-  }
-}
-
-// ======================================
-// COUNTER BUTTONS
-// ======================================
-
-btnDmgPlus.addEventListener("click", () => {
-  damage++;
-
-  if (damage >= damageMax) {
-    damage = 0;
-    wounds++;
-    if (wounds > 10) wounds = 10;
-
-    checkMonsterPostureMessages();
-    damageMax = calculateDamageMax();
-  }
-
-  updateCountersUI();
-});
-
-btnDmgMinus.addEventListener("click", () => {
-  damage--;
-  if (damage < 0) damage = 0;
-  updateCountersUI();
-});
-
-btnEffPlus.addEventListener("click", () => {
-  effort++;
-  if (effort > 10) effort = 10;
-  updateCountersUI();
-});
-
-btnEffMinus.addEventListener("click", () => {
-  effort--;
-  if (effort < 0) effort = 0;
-  updateCountersUI();
-});
-
-btnAccPlus.addEventListener("click", () => {
-  accel++;
-  if (accel > 10) accel = 10;
-  updateCountersUI();
-});
-
-btnAccMinus.addEventListener("click", () => {
-  accel--;
-  if (accel < 0) accel = 0;
-  updateCountersUI();
-});
-
-// ======================================
-// PHASE NAVIGATION
-// ======================================
-
-function updatePlayerTurnFromPhase() {
-  // fases 0-2 son inicio global
-  if (currentPhaseIndex <= 2) {
-    currentPlayerTurn = 1;
-    return;
-  }
-
-  // fases 3-7 son turno jugador, movimiento, acción, desgaste, fin turno
-  if (currentPhaseIndex >= 3 && currentPhaseIndex <= 7) {
-    currentPlayerTurn = 1;
-    return;
-  }
-
-  if (currentPhaseIndex === 8) {
-    currentPlayerTurn = totalPlayers;
-  }
-}
-
-btnNextPhase.addEventListener("click", () => {
-  currentPhaseIndex++;
-
-  if (currentPhaseIndex >= phases.length) {
-    currentPhaseIndex = 0;
-    currentRound++;
-    if (currentRound > 10) currentRound = 10;
-  }
-
-  updatePlayerTurnFromPhase();
-  updateRoundUI();
-  updatePlayerTurnUI();
-  updatePhaseUI();
-});
-
-btnPrevPhase.addEventListener("click", () => {
-  currentPhaseIndex--;
-  if (currentPhaseIndex < 0) currentPhaseIndex = 0;
-
-  updatePlayerTurnFromPhase();
-  updatePlayerTurnUI();
-  updatePhaseUI();
-});
-
-btnReset.addEventListener("click", () => {
-  currentRound = 1;
-  currentPhaseIndex = 0;
-  currentPlayerTurn = 1;
-
-  wounds = 0;
-  damage = 0;
-  effort = 0;
-  accel = 0;
-
-  damageMax = calculateDamageMax();
-
-  updateRoundUI();
-  updatePlayerTurnUI();
-  updatePhaseUI();
-  updateCountersUI();
-});
-
-// ======================================
-// FLOW BUTTONS (SCREEN 1 -> 4)
-// ======================================
-
-btnEnter.addEventListener("click", () => {
-  startMusic();
-  showScreen(screen2);
-});
-
-btnBackTo1.addEventListener("click", () => {
-  selectedPlayers = null;
-  showScreen(screen1);
-});
-
-btnPlayersNext.addEventListener("click", () => {
-  if (!selectedPlayers) {
-    alert("Debes seleccionar número de jugadores.");
-    return;
-  }
-
-  totalPlayers = parseInt(selectedPlayers);
-  showScreen(screen3);
-});
-
-btnBackTo2.addEventListener("click", () => {
-  selectedMonster = null;
-  showScreen(screen2);
-});
-
-btnMonsterNext.addEventListener("click", () => {
-  if (!selectedMonster) {
-    alert("Debes seleccionar un monstruo.");
-    return;
-  }
-
-  showScreen(screenLevel);
-});
-
-btnBackTo3.addEventListener("click", () => {
-  selectedLevel = null;
-  showScreen(screen3);
-});
-
-btnLevelNext.addEventListener("click", () => {
-  if (selectedLevel === null) {
-    alert("Debes seleccionar un nivel.");
-    return;
-  }
-
-  // iniciar tracker
-  currentRound = 1;
-  currentPhaseIndex = 0;
-  currentPlayerTurn = 1;
-
-  wounds = 0;
-  damage = 0;
-  effort = 0;
-  accel = 0;
-
-  damageMax = calculateDamageMax();
-
-  updateRoundUI();
-  updatePlayerTurnUI();
-  updatePhaseUI();
-  updateCountersUI();
-
-  showScreen(screen4);
-});
-
-// ======================================
-// INIT
-// ======================================
-
-showScreen(screen1);
-musicToggleBtn.textContent = "🔇";
-updatePhaseUI();
-updateRoundUI();
-updatePlayerTurnUI();
-updateCountersUI();
+// ===============================
+// STARTUP
+// ===============================
+initPlayerSelection();
+initMonsterSelection();
+initLevelSelection();
