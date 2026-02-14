@@ -1,315 +1,97 @@
 // ======================================
-// PRIMAL - Orden de Turno Companion
+// PRIMAL COMPANION - SCRIPT FUNCIONAL
 // ======================================
 
 // SCREENS
-const screenHome = document.getElementById("screen-home");
-const screenPlayers = document.getElementById("screen-players");
-const screenMonster = document.getElementById("screen-monster");
-const screenLevel = document.getElementById("screen-level");
-const screenTracker = document.getElementById("screen-tracker");
+const screen1 = document.getElementById("screen1");
+const screen2 = document.getElementById("screen2");
+const screen3 = document.getElementById("screen3");
+const screenLevel = document.getElementById("screenLevel");
+const screen4 = document.getElementById("screen4");
 
 // BUTTONS
-const enterBtn = document.getElementById("enterBtn");
+const btnEnter = document.getElementById("btnEnter");
+const btnBackTo1 = document.getElementById("btnBackTo1");
+const btnPlayersNext = document.getElementById("btnPlayersNext");
 
-const cancelPlayersBtn = document.getElementById("cancelPlayersBtn");
-const nextPlayersBtn = document.getElementById("nextPlayersBtn");
+const btnBackTo2 = document.getElementById("btnBackTo2");
+const btnMonsterNext = document.getElementById("btnMonsterNext");
 
-const cancelMonsterBtn = document.getElementById("cancelMonsterBtn");
-const nextMonsterBtn = document.getElementById("nextMonsterBtn");
+const btnBackTo3 = document.getElementById("btnBackTo3");
+const btnLevelNext = document.getElementById("btnLevelNext");
 
-const cancelLevelBtn = document.getElementById("cancelLevelBtn");
-const nextLevelBtn = document.getElementById("nextLevelBtn");
+// TRACKER BUTTONS
+const btnPrevPhase = document.getElementById("btnPrevPhase");
+const btnNextPhase = document.getElementById("btnNextPhase");
+const btnReset = document.getElementById("btnReset");
 
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const resetBtn = document.getElementById("resetBtn");
-
-// MUSIC
+// AUDIO
 const bgMusic = document.getElementById("bgMusic");
 const musicToggleBtn = document.getElementById("musicToggleBtn");
-const volumeSlider = document.getElementById("volumeSlider");
+const volumeControl = document.getElementById("volumeControl");
 
-// TRACKER ELEMENTS
-const phaseList = document.getElementById("phaseList");
-const currentPhaseTitle = document.getElementById("currentPhaseTitle");
-const currentPhaseContent = document.getElementById("currentPhaseContent");
-const roundNumber = document.getElementById("roundNumber");
-const phaseBox = document.getElementById("phaseBox");
+// OVERLAY MESSAGE
+const overlayMessage = document.getElementById("overlayMessage");
+const overlayText = document.getElementById("overlayText");
+
+// UI ELEMENTS SCREEN4
+const roundCounter = document.getElementById("roundCounter");
 const playerTurnCounter = document.getElementById("playerTurnCounter");
-const monsterMessage = document.getElementById("monsterMessage");
 
-// MODAL RESET
-const resetModal = document.getElementById("resetModal");
-const resetYesBtn = document.getElementById("resetYesBtn");
-const resetNoBtn = document.getElementById("resetNoBtn");
+const phaseTitle = document.getElementById("phaseTitle");
+const phaseText = document.getElementById("phaseText");
 
-// COUNTERS
-const woundsValue = document.getElementById("woundsValue");
-const damageValue = document.getElementById("damageValue");
-const damageMax = document.getElementById("damageMax");
+const woundsCounter = document.getElementById("woundsCounter");
+const damageCounter = document.getElementById("damageCounter");
+const damageMaxEl = document.getElementById("damageMax");
 
-const effortValue = document.getElementById("effortValue");
-const accelValue = document.getElementById("accelValue");
+const effortCounter = document.getElementById("effortCounter");
+const accelCounter = document.getElementById("accelCounter");
 
-const damageMinus = document.getElementById("damageMinus");
-const damagePlus = document.getElementById("damagePlus");
+const btnDmgMinus = document.getElementById("btnDmgMinus");
+const btnDmgPlus = document.getElementById("btnDmgPlus");
 
-const effortMinus = document.getElementById("effortMinus");
-const effortPlus = document.getElementById("effortPlus");
+const btnEffMinus = document.getElementById("btnEffMinus");
+const btnEffPlus = document.getElementById("btnEffPlus");
 
-const accelMinus = document.getElementById("accelMinus");
-const accelPlus = document.getElementById("accelPlus");
+const btnAccMinus = document.getElementById("btnAccMinus");
+const btnAccPlus = document.getElementById("btnAccPlus");
 
-const effortWarning = document.getElementById("effortWarning");
-
-// SELECTION CONTAINERS
-const playersSelection = document.getElementById("playersSelection");
-const monsterSelection = document.getElementById("monsterSelection");
-const levelSelection = document.getElementById("levelSelection");
-
-// APP STATE
+// STATE
 let selectedPlayers = null;
 let selectedMonster = null;
 let selectedLevel = null;
 
-let currentPhaseIndex = 0;
+let totalPlayers = 2;
 let currentRound = 1;
+let currentPhaseIndex = 0;
+let currentPlayerTurn = 1;
 
 let wounds = 0;
 let damage = 0;
 let effort = 0;
 let accel = 0;
 
-let totalPlayers = 2;
-let currentPlayerTurn = 1;
-
-let currentPosture = 1;
-let currentDamageMax = 0;
+let damageMax = 0;
 
 // ======================================
-// TEXT FORMATTING
-// ======================================
-
-function formatText(content) {
-  let formatted = content;
-
-  formatted = formatted.replace(/Recordatorio:(.*)/gi, `<span class="reminder">Recordatorio:$1</span>`);
-
-  formatted = formatted.replace(/\b[A-ZÁÉÍÓÚÑÜ0-9]{2,}\b/g, (match) => {
-    return `<strong>${match}</strong>`;
-  });
-
-  formatted = formatted.replace(/\n/g, "<br>");
-
-  return formatted;
-}
-
-// ======================================
-// PHASES DATA (ESTATICO IZQUIERDA)
-// ======================================
-
-const staticPhaseTitles = [
-  "1. Inicio de la ronda",
-  "2. Consumir",
-  "3. Mantenimiento del monstruo",
-  "4. Turno del jugador",
-  "5. Fase de movimiento",
-  "6. Fase de acción",
-  "7. Fase de Desgaste",
-  "8. Fin del turno del jugador",
-  "9. Fin de la ronda"
-];
-
-// ======================================
-// DATA - PHASES CONTENT
-// ======================================
-
-const phasesContent = {
-  "1. Inicio de la ronda": `
-(Remover Confusión)
-
-- Detonar: habilidades de AL COMIENZO DE LA RONDA
-   - Chequeo de POSTURA del Monstruo
-   - Chequeo PELIGROS por efectos de la POSTURA del monstruo
-- Chequeo habilidades del Cazador
-- Chequeo de habilidades de Objetivos
-- Remover ficha de CONFUSION
-`.trim(),
-
-  "2. Consumir": `
-- Cada jugador puede usar una habilidad de CONSUMIR una POCION y removerla del juego (regresa al jugador si falla el escenario)
-`.trim(),
-
-  "3. Mantenimiento del monstruo": `
-- Se refrescan las cartas de COMPORTAMIENTO del monstruo, descarta el número más bajo de comportamiento. Si hay empate, se cambian las iguales.
-- +1 ESFUERZO por jugador.
-- +1 ESFUERZO por aceleración
-`.trim(),
-
-  "4. Turno del jugador": `
-Recordatorio: el jugador con la ficha de AGRESIVIDAD va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda.
-
-Noqueado: Si el jugador esta NOQUEADO, con la ficha en rojo, salta su turno y da vuelta la ficha. 
-Si la ficha es de color blanco, LEVANTATE, remueve la ficha, roba tu mano (5 maximo), y coloca nuevamente la miniatura del jugador en pie. 
-
-- Salir de la Meseta (Terreno)
-- Chequeo del COMPORTAMIENTO del monstruo por sus efectos
-- Termino de CAPTURA, si el jugador estaba capturado.
-- Chequeo de los objetivos del monstruo por efectos
-- Chequeo de las cartas del jugador por efectos  (equipamiento, cartas de acción, maestría que aparezca “AL COMIENZO DEL TURNO”)
-- Chequeo del terreno o plantas del sector por efectos.
-
-Si hay una BAETHANIS (planta) en tu sector, cura 1 de daño a tu personaje por NIVEL DE ARMA.
-Si hay una SYNAEREA (planta) en tu sector, puedes sufrir 1 de daño por NIVEL DE ARMA para robar una carta de tu mazo.
-
-- Remover CEGUERA
-`.trim(),
-
-  "5. Fase de movimiento": `
-- El jugador puede gastar 1 de RESISTENCIA (generada por cartas o fichas de resistencia) para moverse 1 sector, si esto pasa, remueve AMENAZADO. 
-El jugador debe gastar 2 de RESISTENCIA para moverse 1 sector si es Arena (Terreno). 
-Si el jugador no se mueve, el jugador gana la ficha AMENAZADO.
-
-- Chequeo del comportamiento del monstruo por efectos
-
-- Escóndete en un arbusto; 
-Si el arbusto es verde, puedes gastar una carta (verde) para esconderte dentro del arbusto, coloca la miniatura de tu personaje sobre la ficha del arbusto, luego pausa tu turno y selecciona a un jugador que no haya jugado su turno, al terminar el turno de este jugador, dejaras el arbusto y retomaras tu turno. Mientras estes oculto no puedes ASISTIR ni ATRAER al monstruo. 
-
-Si el arbusto es rojo, puedes RECICLAR una carta de AGRESIVIDAD, para poder realizar lo mismo que el arbusto verde.
-
-Si te mueves a un sector con NIEBLA, obtienes la ficha de AMENAZADO.
-`.trim(),
-
-  "6. Fase de acción": `
-Recordatorio: La máxima cantidad de cartas de acción a jugar es 5 (salvo que alguna habilidad o carta diga lo contrario). La máxima cantidad de cartas de acción que puedas jugar en el AGUA es 3.
-
-Los jugadores no pueden jugar cartas cuando están sobre FUEGO (Terreno)
-Los jugadores deben gastar +1 RESISTENCIA al utilizar cartas de esquiva (verdes) cuando estan sobre PANTANO (terreno). Se repite segun la cantidad de cartas jueguen.
-Los jugadores deben gastar +1 RESISTENCIA al utilizar cartas de ofensiva (simbolo ataque) cuando estan en ESPINOS (planta). Se repite segun la cantidad de cartas jueguen.
-
-Puedes LEVANTAR a uno de tus aliados NOQUEADOS gastando 2 RESISTENCIAS, si realizas esta accion da vuelta la ficha de NOQUEADO.
-Puedes recibir ASISTENCIA de otro jugador inactivo, una ves por jugador.
-Puedes quemar cartas para obtener RESISTENCIA y bajar cartas a tu zona de secuencia con un maximo de 5, salvo que otra fuente diga lo contrario. Recuerda que al quemar la carta o las cartas la RESISTENCIA no se acumula para la siguiente carta, salvo las fichas de RESISTENCIA.
-
-Cuando juegues una carta con AGRESIVIDAD, obtienes la ficha de AGRESIVIDAD.
-No puedes empezar a utilizar una carta de ATAQUE (roja) si estas en una zona protegida del monstruo (zona negra).
-Detona COLOR:HABILIDAD y otras habilidades de Cazadores/Objetivos/Terrenos.
-
-Si hay una CYRICAE (planta) en tu sector, cuando juegues una carta de ATAQUE (roja) en tu secuencia, el efecto del ataque gana BONUS DE DAÑO igual a tu NIVEL DE ARMA. Es una ves por carta jugada.
-
-Si ocurre un efecto de el AGUA SE ESPARCE, cuando debes colocar una ficha de agua en una zona que ya esta con agua, debes de colocar una ficha agua a cada sector adyacente.   
-
-Chequeo del COMPORTAMIENTO del monstruo por efectos; segun cartas o efectos que se hayan jugado.
-Obtienes +1 ficha de RESISTENCIA, si 2 o más cartas se mantienen en tu mano al final de la FASE DE ACCION.
-`.trim(),
-
-  "7. Fase de Desgaste": `
-Detonar y resolver habilidades de COMIENZO FASE DE DESGASTE (cartas de PELIGRO y ficha de POLVO)
-
-Si hay POLVO en tu sector (maximo 2), toma 1 ficha de INTERRUPCION (simbolo defensa tachado) y colocalas en distintas cartas DEFENSIVAS de tu sequencia. Esas cartas no cuentan para el chequeo de DESGASTE.
-
-Roba 1 carta de Desgaste (2 si estás AMENAZADO). 
-Si tienes la igual o mayor cantidad de cartas DEFENSIVAS (simbolo defensa), sumando o restando fichas de DEFENZA/INTERRUPCION, no sufres daño por Desgaste este turno. 
-Si fuese lo contrario, sumando o restando fichas de DEFENZA/INTERRUPCION, sufririas el daño del monstruo + sus bonificaciones, en caso de tener.
-
-Luego descarta las cartas de Desgaste.
-
-Puedes remover una ROCA (Terreno) para prevenir el daño de Desgaste, si lo haces descarta la ficha de ROCA (terreno).
-
-- Detonar: habilidades de TERMINO FASE DESGASTE, resuelve los comportamientos del monstruo.
-- Remueve las fichas de DEFENZA/INTERRUPCION.
-`.trim(),
-
-  "8. Fin del turno del jugador": `
-- Descarta la secuencia jugada, desde la carta más vieja a la ultima jugada, dejando arriba del cementerio la más nueva.
-- Rellena tu mano: roba/descarta hasta tener tu tamaño, por defecto el tamaño de la mano es 5, a no ser que alguna carta o efecto diga lo contrario.
-
-Las fichas de TENSION (rectangulo con un -1 al interior) pueden afectar el tamaño de tu mano de juego disminuyendola.
-
-- El MONSTRUO se gira al jugador que tenga la ficha de AGRESIVIDAD
-- Chequeo de efectos del COMPORTAMIENTO del monstruo.
-- Detonar: habilidades de FINAL DEL TURNO DEL JUGADOR, segun ACTUALIZACION RAPIDA/Cazador/Terreno/LENTITUD (ficha de pierna monstruo).
-
-- Chequeo para los efectos de PLANTA/TERRENO en el sector. 
-
-Si hay una ficha de MESETA (terreno) en tu sector y no hay otro jugador arriba de esta, puedes colocar a tu personaje arriba de esta. Cuando una carta de COMPORTAMIENTO es revelada, puedes colocar la miniatura de tu cazador sobre esta y realizar lo siguiente: Cancelar el efecto de la carta de COMPORTAMIENTO y luego, realizar un chequeo de MONTAR.
-
-El chequeo de montar se realiza descartando la primara carta de DESGASTE y se compara con la primera carta de tu mazo. 
-Si la RESISTENCIA de la carta de tu mazo es MENOR a el valor de la carta de DESGASTE, sufre daño del monstruo y coloca a tu personaje en el sector FRONTAL del monstruo. 
-Si es MAYOR o IGUAL, genera la cantidad de daño de tu arma y coloca al personaje en cualquier sector.
-
-Si hay una ficha de PLANTA DE FAUCES SILVESTRE (planta) en tu sector y tienes el estado AMENAZADO, sufres 1 de daño por NIVEL DE ARMA.
-Si hay HIELO (terreno) en tu sector y tienes el estado AMENAZADO, debes de EXILIAR la primera carta de tu mazo en tu zona de cartas exiliadas.
-
-- Si todos los jugadores ya realizaron su turno, termina la ronda, sino debes de pasar al siguiente jugador.
-`.trim(),
-
-  "9. Fin de la ronda": `
-- Detonar: habilidades de AL FINAL DE LA RONDA, resolviendo primero los PELIGROS, COMPORTAMIENTO, cartas de Cazador, girar la ficha de FUEGO (terreno), remover todas las fichas de POLVO, eliminar fichas de VULNERABILIDAD y ATONTADO. 
-- Avanza el Marcador de Turno
-`.trim()
-};
-
-// ======================================
-// FLOW BASE
-// ======================================
-
-const flow = [
-  "1. Inicio de la ronda",
-  "2. Consumir",
-  "3. Mantenimiento del monstruo",
-  "4. Turno del jugador",
-  "5. Fase de movimiento",
-  "6. Fase de acción",
-  "7. Fase de Desgaste",
-  "8. Fin del turno del jugador",
-  "9. Fin de la ronda"
-];
-
-let runtimeFlow = [];
-
-// ======================================
-// BUILD RUNTIME FLOW
-// ======================================
-
-function buildRuntimeFlow(playersCount) {
-  runtimeFlow = [];
-  runtimeFlow.push(flow[0]);
-  runtimeFlow.push(flow[1]);
-  runtimeFlow.push(flow[2]);
-
-  for (let i = 1; i <= playersCount; i++) {
-    runtimeFlow.push("4. Turno del jugador");
-    runtimeFlow.push("5. Fase de movimiento");
-    runtimeFlow.push("6. Fase de acción");
-    runtimeFlow.push("7. Fase de Desgaste");
-    runtimeFlow.push("8. Fin del turno del jugador");
-  }
-
-  runtimeFlow.push("9. Fin de la ronda");
-}
-
-// ======================================
-// SCREEN HANDLING
+// SHOW SCREEN
 // ======================================
 
 function showScreen(screen) {
-  [screenHome, screenPlayers, screenMonster, screenLevel, screenTracker].forEach(s => {
-    s.classList.remove("active");
-  });
-
+  [screen1, screen2, screen3, screenLevel, screen4].forEach(s => s.classList.remove("active"));
   screen.classList.add("active");
 }
 
 // ======================================
-// MUSIC HANDLING
+// MUSIC CONTROL
 // ======================================
 
 let musicPlaying = false;
 
 function startMusic() {
-  bgMusic.volume = 0.5;
+  bgMusic.volume = parseFloat(volumeControl.value);
+
   bgMusic.play().then(() => {
     musicPlaying = true;
     musicToggleBtn.textContent = "🔊";
@@ -329,362 +111,332 @@ musicToggleBtn.addEventListener("click", () => {
   }
 });
 
-volumeSlider.addEventListener("input", () => {
-  bgMusic.volume = volumeSlider.value;
+volumeControl.addEventListener("input", () => {
+  bgMusic.volume = parseFloat(volumeControl.value);
 });
 
 // ======================================
-// TRACKER UI
+// OVERLAY MESSAGE FUNCTION
 // ======================================
 
-function renderStaticPhaseList(activeTitle) {
-  phaseList.innerHTML = "";
+function showOverlayMessage(message, duration = 15000) {
+  overlayText.textContent = message;
+  overlayMessage.classList.remove("hidden");
 
-  staticPhaseTitles.forEach((title) => {
-    const div = document.createElement("div");
-    div.classList.add("phase-item");
-    div.textContent = title;
+  setTimeout(() => {
+    overlayMessage.classList.add("hidden");
+  }, duration);
+}
 
-    if (title === activeTitle) {
-      div.classList.add("active");
-    }
+// ======================================
+// SELECTION HANDLERS
+// ======================================
 
-    phaseList.appendChild(div);
+function setupRadioSelection(name, callback) {
+  const radios = document.querySelectorAll(`input[name="${name}"]`);
+
+  radios.forEach(radio => {
+    radio.addEventListener("change", () => {
+      callback(radio.value);
+    });
   });
 }
 
-function updatePlayerTurnCounter() {
-  playerTurnCounter.textContent = `Turno Jugador ${currentPlayerTurn} / ${totalPlayers}`;
+setupRadioSelection("players", (val) => {
+  selectedPlayers = val;
+});
+
+setupRadioSelection("monster", (val) => {
+  selectedMonster = val;
+});
+
+setupRadioSelection("monsterLevel", (val) => {
+  selectedLevel = val;
+});
+
+// ======================================
+// PHASE DATA
+// ======================================
+
+const phases = [
+  { title: "1. INICIO DE LA RONDA", text: "Inicio de la ronda...\n(Remover Confusión)\n\nDetonar habilidades AL COMIENZO DE LA RONDA." },
+  { title: "2. CONSUMIR", text: "Cada jugador puede consumir una poción y removerla del juego." },
+  { title: "3. MANTENIMIENTO DEL MONSTRUO", text: "Refrescar comportamiento.\n+1 Esfuerzo por jugador.\n+1 Esfuerzo por aceleración." },
+  { title: "4. TURNO DEL JUGADOR", text: "El jugador con AGRESIVIDAD va primero.\nChequeos del jugador y efectos del monstruo." },
+  { title: "5. FASE DE MOVIMIENTO", text: "Moverse cuesta resistencia.\nSi no te mueves, obtienes AMENAZADO." },
+  { title: "6. FASE DE ACCIÓN", text: "Puedes jugar hasta 5 cartas.\nAcciones, asistencia, agresividad, etc." },
+  { title: "7. FASE DE DESGASTE", text: "Roba cartas de desgaste.\nSi no tienes suficientes defensas, sufres daño." },
+  { title: "8. FIN DEL TURNO DEL JUGADOR", text: "Descarta secuencia.\nRellena mano.\nChequeo de efectos." },
+  { title: "9. FIN DE LA RONDA", text: "Resolver habilidades AL FINAL DE LA RONDA.\nAvanzar marcador." }
+];
+
+// ======================================
+// UPDATE UI SCREEN4
+// ======================================
+
+function updateRoundUI() {
+  roundCounter.textContent = `${currentRound} / 10`;
 }
 
-function updatePhaseDisplay() {
-  const phaseTitle = runtimeFlow[currentPhaseIndex];
-  const content = phasesContent[phaseTitle];
+function updatePlayerTurnUI() {
+  playerTurnCounter.textContent = `${currentPlayerTurn} / ${totalPlayers}`;
+}
 
-  currentPhaseTitle.textContent = phaseTitle;
-  currentPhaseContent.innerHTML = formatText(content);
+function updatePhaseUI() {
+  phaseTitle.textContent = phases[currentPhaseIndex].title;
+  phaseText.textContent = phases[currentPhaseIndex].text;
+}
 
-  renderStaticPhaseList(phaseTitle);
+function updateCountersUI() {
+  woundsCounter.textContent = wounds;
+  damageCounter.textContent = damage;
+  effortCounter.textContent = effort;
+  accelCounter.textContent = accel;
 
-  phaseBox.classList.remove("fade-slide");
-  void phaseBox.offsetWidth;
-  phaseBox.classList.add("fade-slide");
+  damageMaxEl.textContent = damageMax;
 }
 
 // ======================================
-// ROUND LOGIC
+// DAMAGE MAX LOGIC (VYRAXEN)
 // ======================================
 
-function updateRoundDisplay() {
-  roundNumber.textContent = currentRound;
-}
+function calculateDamageMax() {
+  if (!selectedMonster || !selectedLevel) return 0;
 
-function resetTracker() {
-  currentPhaseIndex = 0;
-  currentRound = 1;
-  currentPlayerTurn = 1;
+  if (selectedMonster !== "VYRAXEN") {
+    return 10 * totalPlayers;
+  }
 
-  updateRoundDisplay();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
-}
+  const lvl = parseInt(selectedLevel);
 
-// ======================================
-// VYRAXEN DAMAGE FORMULA
-// ======================================
-
-function getVyraxenDamagePerPosture(level, posture, players) {
   const table = {
-    0: { 1: 2, 2: 3, 3: 4 },
-    1: { 1: 5, 2: 7, 3: 10 },
-    2: { 1: 10, 2: 15, 3: 20 },
-    3: { 1: 18, 2: 24, 3: 30 }
+    0: [2, 3, 4],
+    1: [5, 7, 10],
+    2: [10, 15, 20],
+    3: [18, 24, 30]
   };
 
-  const multiplier = table[level]?.[posture] ?? 2;
-  return multiplier * players;
+  const posture = getMonsterPosture();
+  const multiplier = table[lvl][posture - 1];
+
+  return multiplier * totalPlayers;
 }
 
-function updateDamageMax() {
-  if (selectedMonster === "VYRAXEN") {
-    currentDamageMax = getVyraxenDamagePerPosture(selectedLevel, currentPosture, totalPlayers);
-  } else {
-    currentDamageMax = 10;
-  }
-
-  damageMax.textContent = currentDamageMax;
+function getMonsterPosture() {
+  if (wounds < 3) return 1;
+  if (wounds < 7) return 2;
+  return 3;
 }
 
-function updatePostureByWounds() {
-  if (wounds >= 10) {
-    currentPosture = 3;
-    return;
-  }
+// ======================================
+// POSTURE EVENTS / MESSAGES
+// ======================================
 
-  if (wounds >= 7) {
-    currentPosture = 3;
-    return;
-  }
-
-  if (wounds >= 3) {
-    currentPosture = 2;
-    return;
-  }
-
-  currentPosture = 1;
-}
-
-function checkMonsterMessages() {
-  monsterMessage.textContent = "";
+function checkMonsterPostureMessages() {
+  if (selectedMonster !== "VYRAXEN") return;
 
   if (wounds === 3) {
-    monsterMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense...";
+    showOverlayMessage("CAMBIO DE POSTURA en el monstruo, prepárense...");
   }
 
   if (wounds === 7) {
-    monsterMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!";
+    showOverlayMessage("CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!");
   }
 
-  if (wounds >= 10) {
-    monsterMessage.textContent = "Felicidades han vencido a su presa, Cazadores. Ahora merecen un pequeño descanso...";
+  if (wounds === 10) {
+    showOverlayMessage("Felicidades han vencido a su presa, Cazadores. Ahora merecen un pequeño descanso...");
   }
 }
 
 // ======================================
-// COUNTERS LOGIC
+// COUNTER BUTTONS
 // ======================================
 
-function updateCounters() {
-  woundsValue.textContent = wounds;
-  damageValue.textContent = damage;
-  effortValue.textContent = effort;
-  accelValue.textContent = accel;
-
-  updatePostureByWounds();
-  updateDamageMax();
-  checkMonsterMessages();
-
-  if (effort >= 10) {
-    effortWarning.textContent = "DESATADO!! Genera el daño del monstruo a todos los jugadores!!";
-  } else {
-    effortWarning.textContent = "";
-  }
-}
-
-damagePlus.addEventListener("click", () => {
-  if (wounds >= 10) return;
-
+btnDmgPlus.addEventListener("click", () => {
   damage++;
 
-  if (damage >= currentDamageMax) {
+  if (damage >= damageMax) {
     damage = 0;
     wounds++;
-
     if (wounds > 10) wounds = 10;
+
+    checkMonsterPostureMessages();
+    damageMax = calculateDamageMax();
   }
 
-  updateCounters();
+  updateCountersUI();
 });
 
-damageMinus.addEventListener("click", () => {
+btnDmgMinus.addEventListener("click", () => {
   damage--;
   if (damage < 0) damage = 0;
-  updateCounters();
+  updateCountersUI();
 });
 
-effortPlus.addEventListener("click", () => {
+btnEffPlus.addEventListener("click", () => {
   effort++;
   if (effort > 10) effort = 10;
-  updateCounters();
+  updateCountersUI();
 });
 
-effortMinus.addEventListener("click", () => {
+btnEffMinus.addEventListener("click", () => {
   effort--;
   if (effort < 0) effort = 0;
-  updateCounters();
+  updateCountersUI();
 });
 
-accelPlus.addEventListener("click", () => {
+btnAccPlus.addEventListener("click", () => {
   accel++;
   if (accel > 10) accel = 10;
-  updateCounters();
+  updateCountersUI();
 });
 
-accelMinus.addEventListener("click", () => {
+btnAccMinus.addEventListener("click", () => {
   accel--;
   if (accel < 0) accel = 0;
-  updateCounters();
+  updateCountersUI();
 });
 
 // ======================================
-// RESET MODAL
+// PHASE NAVIGATION
 // ======================================
 
-function openResetModal() {
-  resetModal.classList.add("active");
-}
-
-function closeResetModal() {
-  resetModal.classList.remove("active");
-}
-
-resetBtn.addEventListener("click", () => {
-  openResetModal();
-});
-
-resetYesBtn.addEventListener("click", () => {
-  closeResetModal();
-
-  wounds = 0;
-  damage = 0;
-  effort = 0;
-  accel = 0;
-
-  currentPosture = 1;
-
-  updateCounters();
-  resetTracker();
-});
-
-resetNoBtn.addEventListener("click", () => {
-  closeResetModal();
-});
-
-// ======================================
-// NAVIGATION BUTTON EVENTS
-// ======================================
-
-function updateCurrentPlayerFromPhaseIndex() {
+function updatePlayerTurnFromPhase() {
+  // fases 0-2 son inicio global
   if (currentPhaseIndex <= 2) {
     currentPlayerTurn = 1;
     return;
   }
 
-  const playerBlockStart = 3;
-  const playerBlockEnd = runtimeFlow.length - 2;
-
-  if (currentPhaseIndex >= playerBlockStart && currentPhaseIndex <= playerBlockEnd) {
-    const relative = currentPhaseIndex - playerBlockStart;
-    const blockSize = 5;
-    currentPlayerTurn = Math.floor(relative / blockSize) + 1;
-
-    if (currentPlayerTurn > totalPlayers) currentPlayerTurn = totalPlayers;
+  // fases 3-7 son turno jugador, movimiento, acción, desgaste, fin turno
+  if (currentPhaseIndex >= 3 && currentPhaseIndex <= 7) {
+    currentPlayerTurn = 1;
+    return;
   }
 
-  if (currentPhaseIndex === runtimeFlow.length - 1) {
+  if (currentPhaseIndex === 8) {
     currentPlayerTurn = totalPlayers;
   }
 }
 
-nextBtn.addEventListener("click", () => {
+btnNextPhase.addEventListener("click", () => {
   currentPhaseIndex++;
 
-  if (currentPhaseIndex >= runtimeFlow.length) {
+  if (currentPhaseIndex >= phases.length) {
     currentPhaseIndex = 0;
     currentRound++;
-
     if (currentRound > 10) currentRound = 10;
   }
 
-  updateCurrentPlayerFromPhaseIndex();
-  updateRoundDisplay();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
+  updatePlayerTurnFromPhase();
+  updateRoundUI();
+  updatePlayerTurnUI();
+  updatePhaseUI();
 });
 
-prevBtn.addEventListener("click", () => {
+btnPrevPhase.addEventListener("click", () => {
   currentPhaseIndex--;
+  if (currentPhaseIndex < 0) currentPhaseIndex = 0;
 
-  if (currentPhaseIndex < 0) {
-    currentPhaseIndex = 0;
-  }
-
-  updateCurrentPlayerFromPhaseIndex();
-  updatePlayerTurnCounter();
-  updatePhaseDisplay();
+  updatePlayerTurnFromPhase();
+  updatePlayerTurnUI();
+  updatePhaseUI();
 });
 
-// ======================================
-// HOME / PLAYERS / MONSTER / LEVEL FLOW
-// ======================================
-
-enterBtn.addEventListener("click", () => {
-  startMusic();
-  showScreen(screenPlayers);
-});
-
-cancelPlayersBtn.addEventListener("click", () => {
-  selectedPlayers = null;
-  showScreen(screenHome);
-});
-
-nextPlayersBtn.addEventListener("click", () => {
-  const selected = document.querySelector('input[name="players"]:checked');
-
-  if (!selected) {
-    alert("Debes seleccionar una opción de jugadores.");
-    return;
-  }
-
-  selectedPlayers = parseInt(selected.value);
-
-  totalPlayers = selectedPlayers;
-
-  showScreen(screenMonster);
-});
-
-cancelMonsterBtn.addEventListener("click", () => {
-  selectedMonster = null;
-  showScreen(screenPlayers);
-});
-
-nextMonsterBtn.addEventListener("click", () => {
-  const selected = document.querySelector('input[name="monster"]:checked');
-
-  if (!selected) {
-    alert("Debes seleccionar un monstruo.");
-    return;
-  }
-
-  selectedMonster = selected.value;
-
-  showScreen(screenLevel);
-});
-
-cancelLevelBtn.addEventListener("click", () => {
-  selectedLevel = null;
-  showScreen(screenMonster);
-});
-
-nextLevelBtn.addEventListener("click", () => {
-  const selected = document.querySelector('input[name="level"]:checked');
-
-  if (!selected) {
-    alert("Debes seleccionar un nivel.");
-    return;
-  }
-
-  selectedLevel = parseInt(selected.value);
-
-  buildRuntimeFlow(totalPlayers);
-
-  showScreen(screenTracker);
-
-  resetTracker();
+btnReset.addEventListener("click", () => {
+  currentRound = 1;
+  currentPhaseIndex = 0;
+  currentPlayerTurn = 1;
 
   wounds = 0;
   damage = 0;
   effort = 0;
   accel = 0;
 
-  currentPosture = 1;
+  damageMax = calculateDamageMax();
 
-  updateCounters();
+  updateRoundUI();
+  updatePlayerTurnUI();
+  updatePhaseUI();
+  updateCountersUI();
+});
+
+// ======================================
+// FLOW BUTTONS (SCREEN 1 -> 4)
+// ======================================
+
+btnEnter.addEventListener("click", () => {
+  startMusic();
+  showScreen(screen2);
+});
+
+btnBackTo1.addEventListener("click", () => {
+  selectedPlayers = null;
+  showScreen(screen1);
+});
+
+btnPlayersNext.addEventListener("click", () => {
+  if (!selectedPlayers) {
+    alert("Debes seleccionar número de jugadores.");
+    return;
+  }
+
+  totalPlayers = parseInt(selectedPlayers);
+  showScreen(screen3);
+});
+
+btnBackTo2.addEventListener("click", () => {
+  selectedMonster = null;
+  showScreen(screen2);
+});
+
+btnMonsterNext.addEventListener("click", () => {
+  if (!selectedMonster) {
+    alert("Debes seleccionar un monstruo.");
+    return;
+  }
+
+  showScreen(screenLevel);
+});
+
+btnBackTo3.addEventListener("click", () => {
+  selectedLevel = null;
+  showScreen(screen3);
+});
+
+btnLevelNext.addEventListener("click", () => {
+  if (selectedLevel === null) {
+    alert("Debes seleccionar un nivel.");
+    return;
+  }
+
+  // iniciar tracker
+  currentRound = 1;
+  currentPhaseIndex = 0;
+  currentPlayerTurn = 1;
+
+  wounds = 0;
+  damage = 0;
+  effort = 0;
+  accel = 0;
+
+  damageMax = calculateDamageMax();
+
+  updateRoundUI();
+  updatePlayerTurnUI();
+  updatePhaseUI();
+  updateCountersUI();
+
+  showScreen(screen4);
 });
 
 // ======================================
 // INIT
 // ======================================
 
-showScreen(screenHome);
-updateCounters();
+showScreen(screen1);
+musicToggleBtn.textContent = "🔇";
+updatePhaseUI();
+updateRoundUI();
+updatePlayerTurnUI();
+updateCountersUI();
