@@ -6,12 +6,11 @@
   <title>Primal - Companion</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-  <!-- AUDIO -->
+  <!-- Audio -->
   <audio id="bgMusic" loop>
-    <source src="intro.mp3" type="audio/mpeg">
+    <source src="assets/audio/intro.mp3" type="audio/mpeg">
     Tu navegador no soporta audio.
   </audio>
 
@@ -19,13 +18,6 @@
   <div class="audio-controls">
     <button id="musicToggleBtn">🔇</button>
     <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
-  </div>
-
-  <!-- OVERLAY MENSAJES -->
-  <div id="overlayMessage" class="overlay-message hidden">
-    <div class="overlay-box">
-      <p id="overlayText"></p>
-    </div>
   </div>
 
   <!-- Pantalla 1 -->
@@ -47,7 +39,7 @@
 
     <div class="selection-list" id="playersSelection">
       <label class="selection-item">
-        <input type="radio" name="players" value="1">
+        <input type="radio" name="players" value="SOLO">
         <span>SOLO</span>
       </label>
 
@@ -87,7 +79,7 @@
     <h2 class="screen-title">Selecciona el monstruo que te enfrentarás:</h2>
 
     <div class="selection-list" id="monsterSelection">
-      <label class="selection-item"><input type="radio" name="monster" value="VYRAXEN"><span>VYRAXEN</span></label>
+      <label class="selection-item"><input type="radio" name="monster" value="Vyraxen"><span>VYRAXEN</span></label>
       <label class="selection-item"><input type="radio" name="monster" value="KOROWON"><span>KOROWON</span></label>
       <label class="selection-item"><input type="radio" name="monster" value="OZEW"><span>OZEW</span></label>
       <label class="selection-item"><input type="radio" name="monster" value="HYDAR"><span>HYDAR</span></label>
@@ -120,7 +112,7 @@
     </div>
   </section>
 
-  <!-- Pantalla 3.5 - NIVEL -->
+  <!-- Pantalla Nivel -->
   <section id="screenLevel" class="screen">
     <div class="logo-container">
       <img src="assets/images/LOGO.png" class="logo" alt="Primal Logo">
@@ -143,31 +135,35 @@
 
   <!-- Pantalla 4 -->
   <section id="screen4" class="screen">
+
     <div class="top-bar">
-      <button id="btnGlossary" class="glossary-btn">GLOSARIO</button>
+      <div class="top-bar-buttons">
+        <button id="btnGlossary" class="glossary-btn">GLOSARIO</button>
+        <button id="btnPlants" class="glossary-btn">Plantas y Terreno</button>
+        <button id="btnSetup" class="glossary-btn">Setup Monstruo</button>
+      </div>
     </div>
 
     <div class="main-layout">
-
       <div class="left-panel">
-
         <div class="counter-box">
           <h3>RONDA</h3>
-          <p id="roundCounter">1 / 10</p>
+          <p id="roundCounter">1</p>
         </div>
 
         <div class="counter-box">
           <h3>TURNO JUGADOR</h3>
-          <p id="playerTurnCounter">1 / 2</p>
+          <p id="playerTurnCounter">1</p>
         </div>
 
         <h3 class="section-title">ORDEN DE TURNO</h3>
+
         <div class="turn-list" id="turnList"></div>
       </div>
 
       <div class="center-panel">
         <div class="phase-box">
-          <h2 id="phaseTitle">1. INICIO DE LA RONDA</h2>
+          <h2 id="phaseTitle">INICIO DE LA RONDA</h2>
           <div id="phaseText"></div>
         </div>
 
@@ -183,8 +179,21 @@
       <div class="right-panel">
 
         <div class="counter-box">
+          <h3>Postura del Monstruo</h3>
+          <div class="counter-controls">
+            <button id="btnPostureDown">-</button>
+            <span id="postureCounter">1</span>
+            <button id="btnPostureUp">+</button>
+          </div>
+        </div>
+
+        <div class="counter-box">
           <h3>Contador de Heridas Monstruo</h3>
-          <p><span id="woundsCounter">0</span> / 10</p>
+          <div class="counter-controls">
+            <button id="btnWoundDown">-</button>
+            <span id="woundsCounter">0</span> / 10
+            <button id="btnWoundUp">+</button>
+          </div>
         </div>
 
         <div class="counter-box">
@@ -196,27 +205,29 @@
           </div>
         </div>
 
-        <div class="counter-box">
-          <h3>Contador de Esfuerzo</h3>
-          <div class="counter-controls">
-            <button id="btnEffMinus">-</button>
-            <span><span id="effortCounter">0</span> / 10</span>
-            <button id="btnEffPlus">+</button>
-          </div>
-        </div>
-
-        <div class="counter-box">
-          <h3>Contador de Aceleración</h3>
-          <div class="counter-controls">
-            <button id="btnAccMinus">-</button>
-            <span><span id="accelCounter">0</span> / 10</span>
-            <button id="btnAccPlus">+</button>
-          </div>
-        </div>
+        <div id="woundMessage" class="monster-message"></div>
 
       </div>
     </div>
+
   </section>
+
+  <!-- Modal Glosario -->
+  <div id="glossaryModal" class="modal-overlay">
+    <div class="modal-box">
+      <h2 class="modal-title">Glosario</h2>
+      <p class="modal-text">Aquí irá el contenido del glosario.</p>
+      <button id="btnCloseGlossary" class="btn-primary">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Overlay Cambio de postura -->
+  <div id="overlayPosture" class="posture-overlay">
+    <div class="overlay-box">
+      <h2>⚠ CAMBIO DE POSTURA ⚠</h2>
+      <p>Prepárense...</p>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
