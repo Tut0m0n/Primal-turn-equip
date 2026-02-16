@@ -146,12 +146,14 @@ body {
 }
 
 .checkbox {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border: 2px solid #111;
   background: transparent;
   flex-shrink: 0;
+  border-radius: 4px;
 }
+
 
 .option-compact.selected .checkbox,
 .monster-option.selected .checkbox {
@@ -161,11 +163,15 @@ body {
 /* MONSTER GRID */
 .monster-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px 35px;
-  max-width: 520px;
+  grid-auto-flow: column;       /* llena primero hacia abajo */
+  grid-template-rows: repeat(6, auto); /* máximo 3 por columna */
+  gap: 14px 40px;
+  justify-content: center;
+  align-items: start;
+  max-width: 500px;
   margin: 0 auto 25px auto;
 }
+
 
 .monster-option {
   display: flex;
@@ -174,13 +180,34 @@ body {
   font-weight: 800;
   font-size: 14px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  transition: 0.2s;
+  width: 220px;
 }
+
+.monster-option:hover {
+  background: rgba(0,0,0,0.06);
+}
+
 
 .monster-option span {
   width: 140px;
   text-align: left;
 }
+
+.option-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.monster-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
 
 /* NAV BUTTONS */
 .nav-buttons {
@@ -243,27 +270,36 @@ button {
 
 /* TRACKER HEADER */
 .top-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
+  width: 100%;
   padding: 14px 18px;
   border-bottom: 2px solid rgba(0,0,0,0.2);
+  height: 80px;
 }
 
-.header-left {
-  width: 140px;
+.header-center {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
 }
 
 .header-logo {
-  height: 55px;
+  height: 100px;
+  width: auto;
 }
 
 .header-right {
+  position: absolute;
+  right: 18px;
+  top: 40%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 6px;
   width: 200px;
 }
+
 
 .glossary-btn {
   background: white;
@@ -388,10 +424,14 @@ button {
 }
 
 .phase-content {
-  text-align: left;
+  text-align: justify;         /* Justifica el texto */
+  text-align-last: center;     /* Centra la última línea (opcional pero se ve pro) */
   font-size: 12px;
   line-height: 1.5;
-  white-space: pre-line;
+  white-space: pre-wrap;       /* Respeta saltos de línea y evita que se rompa raro */
+  overflow-wrap: break-word;   /* Evita que palabras largas se salgan */
+  word-break: break-word;      /* Refuerzo extra */
+  max-width: 90%;
 }
 
 /* CONTROLS */

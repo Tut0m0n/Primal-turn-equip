@@ -16,6 +16,13 @@ const MAX_WOUNDS = 10;
 const MAX_EFFORT = 10;
 const MAX_ACCEL = 10;
 
+// ✅ CAMBIO: override manual para fases especiales
+let manualPostureOverride = false;
+
+// ===============================
+// DAMAGE TABLES
+// ===============================
+
 // Vyraxen multipliers per posture depending on level
 const VYRAXEN_DAMAGE_TABLE = {
   0: { 1: 2, 2: 3, 3: 4 },
@@ -82,10 +89,273 @@ const FELAXIR_DAMAGE_TABLE = {
 
 // Zekalith multipliers per posture depending on level
 const ZEKALITH_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 3 },
+  1: { 1: 4, 2: 7, 3: 8 },
+  2: { 1: 10, 2: 16, 3: 18 },
+  3: { 1: 15, 2: 24, 3: 28 }
+};
+
+// Jekoros multipliers per posture depending on level
+const JEKOROS_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 4, 3: 5 },
+  1: { 1: 7, 2: 8, 3: 12 },
+  2: { 1: 12, 2: 17, 3: 22 },
+  3: { 1: 20, 2: 25, 3: 30 }
+};
+
+// Zekath multipliers per posture depending on level
+const ZEKATH_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 3 },
+  1: { 1: 4, 2: 7, 3: 8 },
+  2: { 1: 10, 2: 16, 3: 18 },
+  3: { 1: 15, 2: 24, 3: 28 }
+};
+
+// Xitheros multipliers per posture depending on level
+const XITHEROS_DAMAGE_TABLE = {
+  0: { 1: 3, 2: 4, 3: 5 },
+  1: { 1: 7, 2: 8, 3: 12 },
+  2: { 1: 15, 2: 20, 3: 25 },
+  3: { 1: 20, 2: 25, 3: 35 }
+};
+
+// Tarragua multipliers per posture depending on level
+const TARRAGUA_DAMAGE_TABLE = {
   0: { 1: 2, 2: 3, 3: 4 },
-  1: { 1: 5, 2: 7, 3: 10 },
-  2: { 1: 10, 2: 15, 3: 20 },
-  3: { 1: 18, 2: 24, 3: 30 }
+  1: { 1: 6, 2: 7, 3: 8 },
+  2: { 1: 10, 2: 14, 3: 18 },
+  3: { 1: 16, 2: 18, 3: 22 }
+};
+
+// Hurom multipliers per posture depending on level
+const HUROM_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 3 },
+  1: { 1: 4, 2: 6, 3: 7 },
+  2: { 1: 9, 2: 14, 3: 17 },
+  3: { 1: 15, 2: 20, 3: 25 }
+};
+
+// Sirkajj multipliers per posture depending on level
+const SIRKAJJ_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 3 },
+  1: { 1: 5, 2: 6, 3: 9 },
+  2: { 1: 13, 2: 16, 3: 20 },
+  3: { 1: 22, 2: 25, 3: 28 }
+};
+
+// Mamuraak multipliers per posture depending on level
+const MAMURAAK_DAMAGE_TABLE = {
+  0: { 1: 3, 2: 4, 3: 5 },
+  1: { 1: 6, 2: 8, 3: 10 },
+  2: { 1: 12, 2: 18, 3: 20 },
+  3: { 1: 20, 2: 25, 3: 30 }
+};
+
+// Kharja multipliers per posture depending on level
+const KHARJA_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 5 },
+  1: { 1: 5, 2: 7, 3: 12 },
+  2: { 1: 10, 2: 16, 3: 20 },
+  3: { 1: 15, 2: 25, 3: 30 }
+};
+
+// Taraska multipliers per posture depending on level
+const TARASKA_DAMAGE_TABLE = {
+  0: { 1: 5, 2: 3, 3: 3 },
+  1: { 1: 9, 2: 8, 3: 7 },
+  2: { 1: 20, 2: 16, 3: 14 },
+  3: { 1: 28, 2: 25, 3: 22 }
+};
+
+// Pazis multipliers per posture depending on level
+const PAZIS_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 2, 3: 3 },
+  1: { 1: 4, 2: 5, 3: 7 },
+  2: { 1: 10, 2: 13, 3: 17 },
+  3: { 1: 18, 2: 20, 3: 25 }
+};
+
+// Nagarjas multipliers per posture depending on level
+const NAGARJAS_DAMAGE_TABLE = {
+  0: { 1: 4, 2: 4, 3: 5 },
+  1: { 1: 5, 2: 6, 3: 7 },
+  2: { 1: 11, 2: 15, 3: 16 },
+  3: { 1: 18, 2: 22, 3: 28 }
+};
+
+// Reikal multipliers per posture depending on level
+const REIKAL_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 5 },
+  1: { 1: 6, 2: 8, 3: 10 },
+  2: { 1: 12, 2: 16, 3: 20 },
+  3: { 1: 18, 2: 22, 3: 30 }
+};
+
+// Hydar multipliers per posture depending on level
+const HYDAR_DAMAGE_TABLE = {
+  0: { 1: 2, 2: 3, 3: 3 },
+  1: { 1: 4, 2: 6, 3: 8 },
+  2: { 1: 12, 2: 15, 3: 18 },
+  3: { 1: 18, 2: 22, 3: 28 }
+};
+
+// ===============================
+// Reglas Fase Monstruos (BASE)
+// ===============================
+const MONSTER_PHASE_RULES = {
+  VYRAXEN: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  OZEW: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  KOROWON: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  XITHEROS: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  JEKOROS: {
+    0: { woundMessages: [], phaseChanges: { 2: 999, 3: 999 } },
+    1: { woundMessages: [], phaseChanges: { 2: 999, 3: 999 } },
+    2: { woundMessages: [], phaseChanges: { 2: 999, 3: 999 } },
+    3: { woundMessages: [], phaseChanges: { 2: 999, 3: 999 } }
+  },
+
+  TORAMAT: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  DYGORAX: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  OROUXEN: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  REIKAL: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  NAGARJAS: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  FELAXIR: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  HUROM: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  SIRKAAJ: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  ZEKATH: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  ZEKALITH: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  HYDAR: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  PAZIS: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  TARASKA: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  KHARJA: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  MORKRAAS: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  TARRAGUA: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  },
+
+  MAMURAAK: {
+    0: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    1: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    2: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } },
+    3: { woundMessages: [3, 7], phaseChanges: { 2: 3, 3: 7 } }
+  }
 };
 
 // ===============================
@@ -120,12 +390,16 @@ const btnLevelNext = document.getElementById("btnLevelNext");
 const roundCounter = document.getElementById("roundCounter");
 const playerTurnCounter = document.getElementById("playerTurnCounter");
 const woundsCounter = document.getElementById("woundsCounter");
+const monsterPhaseCounter = document.getElementById("monsterPhaseCounter");
 const damageCounter = document.getElementById("damageCounter");
 const damageMax = document.getElementById("damageMax");
 const effortCounter = document.getElementById("effortCounter");
 const accelCounter = document.getElementById("accelCounter");
 const woundMessage = document.getElementById("woundMessage");
 const effortWarning = document.getElementById("effortWarning");
+
+// BOTÓN ESPECIAL
+const btnChangePhase = document.getElementById("btnChangePhase");
 
 // Controls
 const btnDamageDown = document.getElementById("btnDamageDown");
@@ -170,18 +444,38 @@ function showScreen(screenId) {
   screens[screenId].classList.add("active");
 }
 
-function createOption(container, text, value, onSelect, className = "option-compact") {
+function createOption(container, text, value, onSelect, className = "option-compact", iconPath = null) {
   const option = document.createElement("div");
   option.className = className;
   option.dataset.value = value;
 
+  // LEFT (icon + name)
+  const left = document.createElement("div");
+  left.className = "option-left";
+
+  if (iconPath) {
+    const icon = document.createElement("img");
+    icon.src = iconPath;
+    icon.className = "monster-icon";
+    icon.alt = text;
+
+    // Si el icono no carga, no rompe nada
+    icon.onerror = () => {
+      icon.style.display = "none";
+    };
+
+    left.appendChild(icon);
+  }
+
   const label = document.createElement("span");
   label.textContent = text;
+  left.appendChild(label);
 
+  // Checkbox
   const checkbox = document.createElement("div");
   checkbox.className = "checkbox";
 
-  option.appendChild(label);
+  option.appendChild(left);
   option.appendChild(checkbox);
 
   option.addEventListener("click", () => {
@@ -193,15 +487,113 @@ function createOption(container, text, value, onSelect, className = "option-comp
   container.appendChild(option);
 }
 
+function getMonsterDamageTable() {
+  switch (selectedMonster) {
+    case "VYRAXEN": return VYRAXEN_DAMAGE_TABLE;
+    case "OZEW": return OZEW_DAMAGE_TABLE;
+    case "TORAMAT": return TORAMAT_DAMAGE_TABLE;
+    case "DYGORAX": return DYGORAX_DAMAGE_TABLE;
+    case "OROUXEN": return OROUXEN_DAMAGE_TABLE;
+    case "KOROWON": return KOROWON_DAMAGE_TABLE;
+    case "MORKRAAS": return MORKRASS_DAMAGE_TABLE;
+    case "FELAXIR": return FELAXIR_DAMAGE_TABLE;
+    case "ZEKALITH": return ZEKALITH_DAMAGE_TABLE;
+    case "JEKOROS": return JEKOROS_DAMAGE_TABLE;
+    case "ZEKATH": return ZEKATH_DAMAGE_TABLE;
+    case "XITHEROS": return XITHEROS_DAMAGE_TABLE;
+    case "TARRAGUA": return TARRAGUA_DAMAGE_TABLE;
+    case "HUROM": return HUROM_DAMAGE_TABLE;
+    case "SIRKAAJ": return SIRKAJJ_DAMAGE_TABLE;
+    case "MAMURAAK": return MAMURAAK_DAMAGE_TABLE;
+    case "KHARJA": return KHARJA_DAMAGE_TABLE;
+    case "TARASKA": return TARASKA_DAMAGE_TABLE;
+    case "PAZIS": return PAZIS_DAMAGE_TABLE;
+    case "NAGARJAS": return NAGARJAS_DAMAGE_TABLE;
+    case "REIKAL": return REIKAL_DAMAGE_TABLE;
+    case "HYDAR": return HYDAR_DAMAGE_TABLE;
+    default: return null;
+  }
+}
+
+// ===============================
+// ESPECIALES (NUEVO SISTEMA)
+// ===============================
+function isKorowonPhase2() {
+  return selectedMonster === "KOROWON" && posture === 2;
+}
+
+function shouldShowChangePhaseButton() {
+  if (!selectedMonster) return false;
+
+  // JEKOROS siempre puede cambiar manualmente
+  if (selectedMonster === "JEKOROS") return true;
+
+  // KOROWON solo necesita botón en fase 2 para pasar a fase 3
+  if (selectedMonster === "KOROWON" && posture === 2) return true;
+
+  return false;
+}
+
+function getMaxDamage() {
+  if (!selectedPlayers || selectedLevel === null || !selectedMonster) return 10;
+
+  // Korowon en fase 2 NO recibe daño
+  if (isKorowonPhase2()) return 0;
+
+  const table = getMonsterDamageTable();
+  if (!table) return 10;
+
+  const multiplier = table[selectedLevel][posture];
+  return multiplier * selectedPlayers;
+}
+
+function updateMonsterPosture() {
+  const monsterRules = MONSTER_PHASE_RULES[selectedMonster];
+  if (!monsterRules || selectedLevel === null) return;
+
+  const rulesByLevel = monsterRules[selectedLevel];
+  if (!rulesByLevel) return;
+
+  const changes = rulesByLevel.phaseChanges;
+
+  if (wounds >= changes[3]) posture = 3;
+  else if (wounds >= changes[2]) posture = 2;
+  else posture = 1;
+}
+
 function updateTrackerUI() {
+
+  // ✅ CAMBIO: si JEKOROS o KOROWON usaron botón manual, no recalcular postura automáticamente
+  if (!(manualPostureOverride && (selectedMonster === "JEKOROS" || selectedMonster === "KOROWON"))) {
+    updateMonsterPosture();
+  }
+
   roundCounter.textContent = round;
   playerTurnCounter.textContent = `Turno Jugador 1 / ${selectedPlayers}`;
 
   woundsCounter.textContent = wounds;
+  monsterPhaseCounter.textContent = posture;
 
-  const maxDamage = getMaxDamage();
-  damageCounter.textContent = damage;
-  damageMax.textContent = maxDamage;
+  // Mostrar siempre el daño
+  damageCounter.style.display = "inline-block";
+  damageMax.style.display = "inline-block";
+
+  // Botón especial según regla correcta
+  if (shouldShowChangePhaseButton()) {
+    btnChangePhase.style.display = "inline-block";
+  } else {
+    btnChangePhase.style.display = "none";
+  }
+
+  // Korowon fase 2: mostrar 0/0 y bloquear daño
+  if (isKorowonPhase2()) {
+    damageCounter.textContent = 0;
+    damageMax.textContent = 0;
+  } else {
+    const maxDamage = getMaxDamage();
+    damageCounter.textContent = damage;
+    damageMax.textContent = maxDamage;
+  }
 
   effortCounter.textContent = effort;
   accelCounter.textContent = accel;
@@ -214,34 +606,38 @@ function updateWoundMessage() {
   woundMessage.textContent = "";
   woundMessage.style.color = "#000";
 
-  if (wounds === 3) {
-    woundMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense...";
-    woundMessage.style.color = "#c40000";
-  } else if (wounds === 7) {
-    woundMessage.textContent = "CAMBIO DE POSTURA en el monstruo, prepárense… Se ve encabronado!!";
-    woundMessage.style.color = "#c40000";
-  } else if (wounds >= 10) {
-    woundMessage.textContent = "Felicidades han vencido a su presa, Cazadores. Ahora merecen un pequeño descanso...";
+  if (wounds >= 10) {
+    woundMessage.textContent =
+      `Felicidades han vencido a su presa, un ${selectedMonster}. Muy bien Cazadores. Ahora merecen un pequeño descanso...`;
     woundMessage.style.color = "#0b3dff";
+    return;
+  }
+
+  const monsterRules = MONSTER_PHASE_RULES[selectedMonster];
+  if (!monsterRules || selectedLevel === null) {
+    if (wounds === 3 || wounds === 7) {
+      woundMessage.textContent = `⚠️ CAMBIO DE POSTURA de ${selectedMonster}, prepárense... ⚠️`;
+      woundMessage.style.color = "#c40000";
+    }
+    return;
+  }
+
+  const rulesByLevel = monsterRules[selectedLevel];
+  if (!rulesByLevel) return;
+
+  if (rulesByLevel.woundMessages.includes(wounds)) {
+    woundMessage.textContent = `⚠️ CAMBIO DE POSTURA de ${selectedMonster} ⚠️`;
+    woundMessage.style.color = "#c40000";
   }
 }
 
 function updateEffortWarning() {
   if (effort >= 10) {
-    effortWarning.textContent = "DESATADO!! Genera el daño del monstruo a todos los jugadores!!";
+    effortWarning.textContent = `⚠️ ${selectedMonster} esta DESATADO!! ⚠️ Genera el daño del monstruo a todos los jugadores!! `;
     effortWarning.style.color = "#c40000";
   } else {
     effortWarning.textContent = "";
   }
-}
-
-function getMaxDamage() {
-  if (!selectedPlayers || selectedLevel === null || !selectedMonster) return 10;
-
-  if (selectedMonster !== "VYRAXEN") return 10;
-
-  const multiplier = VYRAXEN_DAMAGE_TABLE[selectedLevel][posture];
-  return multiplier * selectedPlayers;
 }
 
 function clamp(value, min, max) {
@@ -254,39 +650,95 @@ function clamp(value, min, max) {
 const phases = [
   {
     title: "1. Inicio de la ronda",
-    content: "(Remover Confusión)\n\n- Detonar: habilidades de AL COMIENZO DE LA RONDA\n   - Chequeo de POSTURA del Monstruo\n   - Chequeo PELIGROS por efectos de la POSTURA del monstruo\n- Chequeo habilidades del Cazador\n- Chequeo de habilidades de Objetivos\n- Remover ficha de CONFUSION"
+    content:
+`(Remover Confusión)
+- Chequeo de Postura del Monstruo
+- Chequeo de Postura del Monstruo y Peligros por efectos
+- Efectos de inicio de ronda`
   },
   {
     title: "2. Consumir",
-    content: "- Cada jugador puede usar una habilidad de CONSUMIR una POCION y removerla del juego (regresa al jugador si falla el escenario)"
+    content:
+`- Cada jugador puede usar una habilidad de consumo`
   },
   {
     title: "3. Mantenimiento del monstruo",
-    content: "- Se refrescan las cartas de COMPORTAMIENTO del monstruo, descarta el número más bajo de comportamiento. Si hay empate, se cambian las iguales.\n- +1 ESFUERZO por jugador.\n- +1 ESFUERZO por aceleración"
+    content:
+`- Se refrescan las cartas de COMPORTAMIENTO del monstruo, descarta el número más bajo de comportamiento.
+  Si hay un empate, se cambian las iguales.
+- +1 Esfuerzo por jugador
+- +1 Esfuerzo por aceleración`
   },
   {
     title: "4. Turno del jugador",
-    content: "Recordatorio: el jugador con la ficha de AGRESIVIDAD va primero.\n\n- Salir de la Meseta (Terreno)\n- Chequeo del COMPORTAMIENTO del monstruo por sus efectos\n- Termino de CAPTURA, si el jugador estaba capturado.\n- Chequeo de los objetivos del monstruo por efectos\n- Remover CEGUERA"
+    content:
+`(Remover Ceguera)
+
+Recordatorio: el jugador con la ficha de AMENAZA va primero y gana la ficha de Primer Jugador al comenzar la nueva ronda.
+
+Noqueado:
+Si el jugador está NOQUEADO, con la ficha en rojo, salta su turno y da vuelta la ficha.
+Si la ficha es de color blanco, LEVÁNTATE, remueve la ficha, roba tu mano (5 máximo), y coloca nuevamente la miniatura del jugador en pie.
+
+- Chequeo del COMPORTAMIENTO del monstruo por sus efectos
+- Chequeo de los objetivos del monstruo por efectos
+- Chequeo de las cartas del jugador por efectos
+  (equipamiento, cartas de acción, maestría)
+- Después de otros detonantes: comienzan los efectos de inicio del turno del jugador
+- Chequeo del terreno o plantas del sector por efectos
+- Salir de la Meseta (Terreno)`
   },
   {
     title: "5. Fase de movimiento",
-    content: "- El jugador puede gastar 1 de RESISTENCIA para moverse 1 sector\n- Si no se mueve, gana la ficha AMENAZADO\n- Chequeo del comportamiento del monstruo por efectos"
+    content:
+`- El jugador puede gastar 1 de Resistencia para moverse 1 sector
+  (Si esto pasa, remueve Atado)
+- El jugador debe gastar 2 de Resistencia para moverse 1 sector si es Arena (Terreno)
+- Si el jugador no se mueve, el jugador gana la ficha Atado
+- Chequeo del comportamiento del monstruo por efectos
+- Escóndete en un arbusto
+  (Rellenar después según el tipo de arbusto)`
   },
   {
     title: "6. Fase de acción",
-    content: "Recordatorio: La máxima cantidad de cartas de acción a jugar es 5\n\n- Puedes LEVANTAR a aliados NOQUEADOS\n- Cuando juegues una carta con AGRESIVIDAD, obtienes la ficha\n- Detona COLOR:HABILIDAD"
+    content:
+`- La máxima cantidad de cartas de acción a jugar es 5
+  (salvo que alguna habilidad o carta diga lo contrario)
+- La máxima cantidad de cartas de acción que puedas jugar en el Agua es 3
+- Los jugadores no pueden jugar cartas cuando están sobre Fuego (Terreno)
+- Chequeo del comportamiento del monstruo por efectos
+- +1 ficha de Resistencia si 2 o más cartas se mantienen en tu mano al final de la fase de acción`
   },
   {
     title: "7. Fase de Desgaste",
-    content: "- Roba 1 carta de Desgaste (2 si estás AMENAZADO)\n- Si tienes cartas DEFENSIVAS suficientes, no sufres daño\n- Detonar: habilidades de TERMINO FASE DESGASTE"
+    content:
+`- Roba 1 carta de Desgaste (2 si estás AMENAZADO)
+- Puedes remover una ROCA (Terreno) para prevenir el daño de Desgaste
+- Chequeo de efectos del comportamiento del monstruo
+- Después de otros detonantes: Termina la fase de efectos de Desgaste
+  (Fin de los efectos de la fase de Desgaste)`
   },
   {
     title: "8. Fin del turno del jugador",
-    content: "- Descarta la secuencia jugada\n- Rellena tu mano hasta 5 cartas\n- El MONSTRUO se gira al jugador que tenga AGRESIVIDAD"
+    content:
+`- Descarta la secuencia jugada
+  (desde la carta más vieja a la nueva jugada, dejando arriba la más nueva)
+- Rellena tu mano: roba/descarta hasta tener tu tamaño
+  (por defecto el tamaño de la mano es 5, a no ser que alguna carta o efecto diga lo contrario)
+- El MONSTRUO gira al jugador que tenga la AMENAZA
+- Chequeo de efectos del comportamiento del monstruo
+- Después de otros detonantes: Termina el turno de efectos del jugador
+  (Fin de los efectos del turno del jugador)
+- Chequeo para los efectos de PLANTA/TERRENO en el sector
+- Subirse a una MESETA`
   },
   {
     title: "9. Fin de la ronda",
-    content: "- Detonar: habilidades de AL FINAL DE LA RONDA\n- Avanza el Marcador de Turno"
+    content:
+`- Chequeo de Postura, Peligro y efectos de comportamiento del monstruo
+- Avanza el Marcador de Turno
+- Después de otras detonaciones: Terminan los efectos de fin de ronda
+  (Fin de los efectos de la ronda)`
   }
 ];
 
@@ -304,7 +756,7 @@ function updatePhaseUI() {
 function buildTurnOrderList() {
   turnOrderList.innerHTML = "";
 
-  phases.forEach((phase, index) => {
+  phases.forEach((phase) => {
     const item = document.createElement("div");
     item.className = "phase-item";
     item.textContent = phase.title;
@@ -319,6 +771,7 @@ let musicPlaying = false;
 
 function startMusic() {
   bgMusic.volume = parseFloat(volumeControl.value);
+
   bgMusic.play().then(() => {
     musicPlaying = true;
     btnMusicToggle.textContent = "🔊";
@@ -350,7 +803,7 @@ function buildPlayersOptions() {
     { text: "4", value: 4 },
     { text: "5", value: 5 }
   ];
-  
+
   playerOptions.forEach(option => {
     createOption(playersOptions, option.text, option.value, (val) => {
       selectedPlayers = parseInt(val);
@@ -360,11 +813,23 @@ function buildPlayersOptions() {
 
 function buildMonsterOptions() {
   monsterOptions.innerHTML = "";
-  const monsters = ["VYRAXEN", "KOROWON", "OZEW", "HYDAR", "PAZIS", "TARASKA", "KHARJA", "OROUXEN", "JEKOROS", "REIKAL", "NAGARJAS", "XITHEROS", "TORAMAT", "FELAXIR", "HUROM", "SIRKAAJ", "ZEKATH", "DYGORAX", "MORKRAAS", "TARRAGUA", "MAMURAAK", "ZEKALITH"];
+
+  const monsters = [
+    "VYRAXEN", "KOROWON", "OZEW", "HYDAR", "PAZIS", "TARASKA",
+    "KHARJA", "OROUXEN", "JEKOROS", "REIKAL", "NAGARJAS", "XITHEROS",
+    "TORAMAT", "FELAXIR", "HUROM", "SIRKAAJ", "ZEKATH", "DYGORAX",
+    "MORKRAAS", "TARRAGUA", "MAMURAAK", "ZEKALITH"
+  ];
+
   monsters.forEach(monster => {
-    createOption(monsterOptions, monster, monster, (val) => {
-      selectedMonster = val;
-    }, "monster-option");
+    createOption(
+      monsterOptions,
+      monster,
+      monster,
+      (val) => { selectedMonster = val; },
+      "monster-option",
+      `assets/images/${monster.toLowerCase()}.svg`
+    );
   });
 }
 
@@ -438,22 +903,87 @@ btnLevelNext.addEventListener("click", () => {
   damage = 0;
   effort = 0;
   accel = 0;
+  currentPhaseIndex = 0;
+
+  // ✅ CAMBIO: reset override manual
+  manualPostureOverride = false;
 
   updateTrackerUI();
 });
 
+// ===============================
+// BOTÓN ESPECIAL: CAMBIAR DE FASE
+// ===============================
+btnChangePhase.addEventListener("click", () => {
+
+  // JEKOROS: siempre puede cambiar fase manualmente
+  if (selectedMonster === "JEKOROS") {
+    manualPostureOverride = true; // ✅ CAMBIO
+    if (posture < 3) {
+      posture++;
+      updateTrackerUI();
+    }
+    return;
+  }
+
+  // KOROWON: solo puede cambiar de fase si está en postura 2
+  if (selectedMonster === "KOROWON") {
+    if (posture === 2) {
+      manualPostureOverride = true; // ✅ CAMBIO
+      posture = 3;
+      damage = 0;
+      updateTrackerUI();
+    }
+    return;
+  }
+
+});
+
 // Damage control
 btnDamageDown.addEventListener("click", () => {
+
+  // Korowon fase 2: no recibe daño
+  if (isKorowonPhase2()) {
+    updateTrackerUI();
+    return;
+  }
+
   damage = clamp(damage - 1, 0, getMaxDamage());
   updateTrackerUI();
 });
 
 btnDamageUp.addEventListener("click", () => {
-  damage = clamp(damage + 1, 0, getMaxDamage());
-  if (damage >= getMaxDamage()) {
+
+  // Korowon fase 2: no recibe daño
+  if (isKorowonPhase2()) {
+    updateTrackerUI();
+    return;
+  }
+
+  // JEKOROS: daño infinito pero NO cambia fase con +
+  if (selectedMonster === "JEKOROS") {
+    damage = clamp(damage + 1, 0, 999);
+    updateTrackerUI();
+    return;
+  }
+
+  // XITHEROS: daño infinito
+  if (selectedMonster === "XITHEROS") {
+    damage = clamp(damage + 1, 0, 999);
+    updateTrackerUI();
+    return;
+  }
+
+  // KOROWON (fase 1 y 3): daño normal
+  const maxDmg = getMaxDamage();
+
+  damage = clamp(damage + 1, 0, maxDmg);
+
+  if (damage >= maxDmg) {
     damage = 0;
     wounds = clamp(wounds + 1, 0, MAX_WOUNDS);
   }
+
   updateTrackerUI();
 });
 
@@ -497,7 +1027,7 @@ btnReset.addEventListener("click", () => {
 
 resetYesBtn.addEventListener("click", () => {
   resetModal.classList.remove("active");
-  
+
   round = 1;
   posture = 1;
   wounds = 0;
@@ -505,7 +1035,10 @@ resetYesBtn.addEventListener("click", () => {
   effort = 0;
   accel = 0;
   currentPhaseIndex = 0;
-  
+
+  // ✅ CAMBIO: reset override manual
+  manualPostureOverride = false;
+
   updateTrackerUI();
   updatePhaseUI();
 });

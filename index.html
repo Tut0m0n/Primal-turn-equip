@@ -3,171 +3,227 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Primal - Companion</title>
+  <title>Primal - Tracker</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-  <!-- Audio -->
-  <audio id="bgMusic" loop>
-    <source src="intro.mp3" type="audio/mpeg">
-    Tu navegador no soporta audio.
-  </audio>
-
-  <!-- Barra de control de audio -->
+  <!-- CONTROLES DE AUDIO -->
   <div class="audio-controls">
-    <button id="btnMusicToggle">🔊</button>
-    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5">
+    <button id="btnMusicToggle">🔇</button>
+    <input id="volumeControl" type="range" min="0" max="1" step="0.05" value="0.4" />
   </div>
 
-  <!-- Pantalla 1 -->
-  <section id="screen1" class="screen active">
-    <div class="center-box fade-in">
-      <img src="LOGO.png" class="main-logo-home" alt="Primal Logo">
-      <button class="btn-enter" id="btnEnter">ENTRAR</button>
+  <!-- MÚSICA -->
+  <audio id="bgMusic" loop>
+    <source src="assets/audio/intro.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ========================= -->
+  <!-- PANTALLA 1 - INICIO -->
+  <!-- ========================= -->
+  <div id="screen1" class="screen active fade-in">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" class="main-logo-home" alt="Logo Home">
+      <button id="btnEnter" class="btn-enter">ENTRAR</button>
     </div>
-  </section>
+  </div>
 
-  <!-- Pantalla 2 -->
-  <section id="screen2" class="screen">
-    <div class="center-box fade-in">
-      <img src="LOGO.png" class="main-logo" alt="Primal Logo">
-      <h2 class="question-title">Selecciona número de jugadores:</h2>
+  <!-- ========================= -->
+  <!-- PANTALLA 2 - JUGADORES -->
+  <!-- ========================= -->
+  <div id="screen2" class="screen fade-slide">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" class="main-logo" alt="Logo">
 
-      <div class="selection-compact" id="playersOptions"></div>
+      <h2 class="question-title">Selecciona la cantidad de jugadores</h2>
+
+      <div id="playersOptions" class="selection-compact"></div>
 
       <div class="nav-buttons">
-        <button class="btn-cancel" id="btnPlayersCancel">Cancelar</button>
-        <button class="btn-primary small-btn" id="btnPlayersNext">Siguiente</button>
+        <button id="btnPlayersCancel" class="btn-cancel">Cancelar</button>
+        <button id="btnPlayersNext" class="btn-primary">Siguiente</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Pantalla 3 -->
-  <section id="screen3" class="screen">
-    <div class="center-box fade-in">
-      <img src="LOGO.png" class="main-logo" alt="Primal Logo">
-      <h2 class="question-title">Selecciona el monstruo que te enfrentarás:</h2>
+  <!-- ========================= -->
+  <!-- PANTALLA 3 - MONSTRUOS -->
+  <!-- ========================= -->
+  <div id="screen3" class="screen fade-slide">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" class="main-logo" alt="Logo">
 
-      <div class="monster-grid" id="monsterOptions"></div>
+      <h2 class="question-title">Selecciona el monstruo</h2>
+
+      <div id="monsterOptions" class="monster-grid"></div>
 
       <div class="nav-buttons">
-        <button class="btn-cancel" id="btnMonsterCancel">Cancelar</button>
-        <button class="btn-primary small-btn" id="btnMonsterNext">Siguiente</button>
+        <button id="btnMonsterCancel" class="btn-cancel">Cancelar</button>
+        <button id="btnMonsterNext" class="btn-primary">Siguiente</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Pantalla 3.5 - NIVEL -->
-  <section id="screenLevel" class="screen">
-    <div class="center-box fade-in">
-      <img src="LOGO.png" class="main-logo" alt="Primal Logo">
-      <h2 class="question-title">Selecciona el Nivel del Monstruo a enfrentar:</h2>
+  <!-- ========================= -->
+  <!-- PANTALLA 4 - NIVEL -->
+  <!-- ========================= -->
+  <div id="screenLevel" class="screen fade-slide">
+    <div class="center-box">
+      <img src="assets/images/LOGO.png" class="main-logo" alt="Logo">
 
-      <div class="selection-compact" id="levelOptions"></div>
+      <h2 class="question-title">Selecciona el nivel del monstruo</h2>
+
+      <div id="levelOptions" class="selection-compact"></div>
 
       <div class="nav-buttons">
-        <button class="btn-cancel" id="btnLevelCancel">Cancelar</button>
-        <button class="btn-primary small-btn" id="btnLevelNext">Siguiente</button>
+        <button id="btnLevelCancel" class="btn-cancel">Cancelar</button>
+        <button id="btnLevelNext" class="btn-primary">Comenzar</button>
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- Pantalla 4 -->
-  <section id="screen4" class="screen">
+  <!-- ========================= -->
+  <!-- PANTALLA 5 - TRACKER -->
+  <!-- ========================= -->
+  <div id="screen4" class="screen fade-in">
+
+    <!-- ENCABEZADO -->
     <div class="top-header">
-      <div class="header-left">
-        <img src="LOGO.png" class="header-logo" alt="Primal Logo">
+      <div class="header-center">
+        <img src="assets/images/LOGO.png" class="header-logo" alt="Logo">
       </div>
-      <div class="header-center"></div>
+
       <div class="header-right">
-        <button id="btnGlossary" class="glossary-btn">GLOSARIO</button>
-        <button id="btnPlants" class="glossary-btn">PLANTAS Y TERRENO</button>
-        <button id="btnSetup" class="glossary-btn">SETUP MONSTRUO</button>
+        <button id="btnGlossary" class="glossary-btn">Glosario</button>
+        <button id="btnPlants" class="glossary-btn">Plantas / Terreno</button>
+        <button id="btnSetup" class="glossary-btn">Setup Monstruo</button>
       </div>
     </div>
 
+    <!-- CONTENEDOR PRINCIPAL -->
     <div class="layout">
+
+      <!-- PANEL IZQUIERDO -->
       <div class="left-panel">
+
         <div class="round-counter-box">
-          <div class="round-title">RONDA</div>
-          <div class="round-value"><span id="roundCounter">1</span> / 10</div>
+          <div class="round-title">Ronda</div>
+          <div id="roundCounter" class="round-value">1</div>
         </div>
 
-        <div class="player-turn-counter-left">
-          <span id="playerTurnCounter">Turno Jugador 1</span>
+        <div id="playerTurnCounter" class="player-turn-counter-left">
+          Turno Jugador 1 / 2
         </div>
 
-        <h2 class="left-title">ORDEN DE TURNO</h2>
-        <div class="phase-list" id="turnOrderList"></div>
+        <div class="left-title">Orden de Turno</div>
+        <div id="turnOrderList" class="phase-list"></div>
+
       </div>
 
+      <!-- PANEL CENTRAL -->
       <div class="center-panel">
-        <div class="phase-box fade-slide">
-          <h2 id="phaseTitle" class="phase-title">-</h2>
-          <div id="phaseContent" class="phase-content">Presiona Siguiente para comenzar.</div>
+
+        <div class="phase-box">
+          <div id="phaseTitle" class="phase-title">Fase</div>
+          <div id="phaseContent" class="phase-content"></div>
+        </div>
+
+        <div class="controls">
+          <button id="btnPrevPhase" class="btn-secondary">⬅️ Anterior</button>
+          <button id="btnNextPhase" class="btn-secondary">Siguiente ➡️</button>
+          <button id="btnReset" class="btn-danger">REINICIAR</button>
         </div>
 
         <div id="woundMessage" class="warning-text"></div>
+        <div id="effortWarning" class="warning-text"></div>
 
-        <div class="controls">
-          <button id="btnPrevPhase" class="btn-secondary small-btn">← Anterior</button>
-          <button id="btnNextPhase" class="btn-primary small-btn">Siguiente →</button>
-          <button id="btnReset" class="btn-danger small-btn">Reset ↻</button>
-        </div>
       </div>
 
+      <!-- PANEL DERECHO -->
       <div class="right-panel">
+
+        <!-- HERIDAS -->
         <div class="counter-card">
-          <h3 class="counter-title">Heridas Monstruo</h3>
-          <div class="counter-display"><span id="woundsCounter">0</span> / 10</div>
+          <div class="counter-title">HERIDAS</div>
+          <div id="woundsCounter" class="counter-display">0</div>
         </div>
 
+        <!-- FASE DEL MONSTRUO -->
         <div class="counter-card">
-          <h3 class="counter-title">Daño Monstruo</h3>
+          <div class="counter-title">FASE DEL MONSTRUO</div>
+          <div id="monsterPhaseCounter" class="counter-display">1</div>
+
+          <!-- BOTÓN SOLO PARA ESPECIALES (se controla con JS) -->
+          <button id="btnChangePhase" class="btn-primary" style="display:none; margin-top: 10px;">
+            Cambiar de Fase
+          </button>
+        </div>
+
+        <!-- DAÑO -->
+        <div class="counter-card">
+          <div class="counter-title">DAÑO</div>
+
           <div class="counter-controls">
-            <button class="mini-btn" id="btnDamageDown">-</button>
-            <span><span id="damageCounter">0</span> / <span id="damageMax">10</span></span>
-            <button class="mini-btn" id="btnDamageUp">+</button>
+            <button id="btnDamageDown" class="mini-btn">-</button>
+
+            <div class="counter-display">
+              <span id="damageCounter">0</span> /
+              <span id="damageMax">10</span>
+            </div>
+
+            <button id="btnDamageUp" class="mini-btn">+</button>
           </div>
         </div>
 
+        <!-- ESFUERZO -->
         <div class="counter-card">
-          <h3 class="counter-title">Esfuerzo</h3>
+          <div class="counter-title">ESFUERZO</div>
           <div class="counter-controls">
-            <button class="mini-btn" id="btnEffortDown">-</button>
-            <span><span id="effortCounter">0</span> / 10</span>
-            <button class="mini-btn" id="btnEffortUp">+</button>
+            <button id="btnEffortDown" class="mini-btn">-</button>
+            <div id="effortCounter" class="counter-display">0</div>
+            <button id="btnEffortUp" class="mini-btn">+</button>
           </div>
-          <div id="effortWarning" class="warning-text"></div>
         </div>
 
+        <!-- ACELERACIÓN -->
         <div class="counter-card">
-          <h3 class="counter-title">Aceleración</h3>
+          <div class="counter-title">ACELERACIÓN</div>
           <div class="counter-controls">
-            <button class="mini-btn" id="btnAccelDown">-</button>
-            <span><span id="accelCounter">0</span> / 10</span>
-            <button class="mini-btn" id="btnAccelUp">+</button>
+            <button id="btnAccelDown" class="mini-btn">-</button>
+            <div id="accelCounter" class="counter-display">0</div>
+            <button id="btnAccelUp" class="mini-btn">+</button>
           </div>
         </div>
+
       </div>
     </div>
 
-    <footer class="footer">Hecho para uso personal - Primal Companion</footer>
-  </section>
+    <!-- PIE DE PÁGINA -->
+    <div class="footer">
+      Primal - Tracker Companion
+    </div>
 
-  <!-- MODAL RESET -->
+  </div>
+
+  <!-- ========================= -->
+  <!-- MODAL DE REINICIO -->
+  <!-- ========================= -->
   <div id="resetModal" class="modal-overlay">
-    <div class="modal-box fade-in">
-      <h2 class="modal-title">Confirmación</h2>
-      <p class="modal-text">Si presionas reset se reseteará todo, ¿deseas hacerlo?</p>
+    <div class="modal-box">
+      <div class="modal-title">¿Seguro que quieres reiniciar?</div>
+      <div class="modal-text">Se reiniciarán todos los contadores.</div>
+
       <div class="modal-buttons">
-        <button id="resetYesBtn" class="btn-danger small-btn">SI</button>
-        <button id="resetNoBtn" class="btn-secondary small-btn">NO</button>
+        <button id="resetYesBtn" class="btn-danger">Sí</button>
+        <button id="resetNoBtn" class="btn-secondary">No</button>
       </div>
     </div>
   </div>
 
+  <!-- SCRIPT -->
   <script src="script.js"></script>
+
 </body>
 </html>
